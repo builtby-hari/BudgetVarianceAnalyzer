@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 240" width="1200" height="240" role="img" aria-label="Budget Variance Analyzer banner">
+<rect width="1200" height="240" fill="#ffffff"/>
+<text x="60" y="112" font-size="56" font-weight="bold" fill="#1f3a5f" font-family="Helvetica, Arial, sans-serif">Budget Variance Analyzer</text>
+<text x="60" y="156" font-size="22" fill="#334155" font-family="Helvetica, Arial, sans-serif">Budget vs Actual Variance, Materiality Flags and an Operating Income Bridge</text>
+<rect x="60" y="184" width="1080" height="1.5" fill="#14b8a6" opacity="0.5"/>
+<rect x="60" y="182" width="140" height="5" rx="2.5" fill="#14b8a6"/>
+<text x="60" y="214" font-size="13" fill="#334155" font-family="Helvetica, Arial, sans-serif">Synthetic sample data. Python standard library only.</text>
+</svg>

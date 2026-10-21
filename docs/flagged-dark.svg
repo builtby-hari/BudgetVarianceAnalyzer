@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 506" width="820" height="506" role="img" aria-label="Flagged Line Items: Largest Variances, Favorable and Unfavorable">
+<text x="410.0" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Flagged Line Items: Largest Variances, Favorable and Unfavorable</text>
+<text x="410.0" y="45" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Synthetic sample data, through 2026-09 (9 months). * = material (over both the $ and % thresholds).</text>
+<line x1="470" x2="470" y1="86" y2="428" stroke="#e2e8f0"/>
+<rect x="470.0" y="96" width="150.0" height="18" fill="#fb923c" opacity="1"/>
+<text x="22" y="109" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Technology / Contractors *</text>
+<text x="626.0" y="109" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">+$454K (+21.6%)</text>
+<rect x="470.0" y="130" width="79.1" height="18" fill="#fb923c" opacity="1"/>
+<text x="22" y="143" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Technology / Software &amp; Data *</text>
+<text x="555.1" y="143" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">+$240K (+12.3%)</text>
+<rect x="403.6" y="164" width="66.4" height="18" fill="#2dd4bf" opacity="0.4"/>
+<text x="22" y="177" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Credit Reporting / Salaries &amp; Benefits</text>
+<text x="397.6" y="177" text-anchor="end" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">-$201K (-5.2%)</text>
+<rect x="470.0" y="198" width="39.7" height="18" fill="#fb923c" opacity="1"/>
+<text x="22" y="211" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Capital Markets / Travel &amp; Training *</text>
+<text x="515.7" y="211" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">+$120K (+28.3%)</text>
+<rect x="442.2" y="232" width="27.8" height="18" fill="#2dd4bf" opacity="1"/>
+<text x="22" y="245" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">FP&amp;A / Professional Services *</text>
+<text x="436.2" y="245" text-anchor="end" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">-$84K (-25.3%)</text>
+<rect x="470.0" y="266" width="16.1" height="18" fill="#fb923c" opacity="0.4"/>
+<text x="22" y="279" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Capital Markets / Software &amp; Data</text>
+<text x="492.1" y="279" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">+$49K (+4.3%)</text>
+<rect x="454.9" y="300" width="15.1" height="18" fill="#2dd4bf" opacity="0.4"/>
+<text x="22" y="313" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Capital Markets / Salaries &amp; Benefits</text>
+<text x="448.9" y="313" text-anchor="end" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">-$46K (-0.8%)</text>
+<rect x="470.0" y="334" width="9.2" height="18" fill="#fb923c" opacity="1"/>
+<text x="22" y="347" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">FP&amp;A / Software &amp; Data *</text>
+<text x="485.2" y="347" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">+$28K (+10.6%)</text>
+<rect x="462.0" y="368" width="8.0" height="18" fill="#2dd4bf" opacity="0.4"/>
+<text x="22" y="381" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">FP&amp;A / Salaries &amp; Benefits</text>
+<text x="456.0" y="381" text-anchor="end" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">-$24K (-1.0%)</text>
+<rect x="466.3" y="402" width="3.7" height="18" fill="#2dd4bf" opacity="0.4"/>
+<text x="22" y="415" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Technology / Salaries &amp; Benefits</text>
+<text x="460.3" y="415" text-anchor="end" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">-$11K (-0.2%)</text>
+<rect x="80" y="481" width="10" height="10" fill="#fb923c"/>
+<text x="95" y="490" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Over Budget (Unfavorable)</text>
+<rect x="277.0" y="481" width="10" height="10" fill="#2dd4bf"/>
+<text x="292.0" y="490" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Under Budget (Favorable)</text>
+</svg>

@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 414" width="820" height="414" role="img" aria-label="Variance % vs Budget by Cost Center and Month (Expense)">
+<defs><linearGradient id="heatgrad" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#2dd4bf"/><stop offset="0.5" stop-color="#1e293b"/><stop offset="1" stop-color="#fb923c"/></linearGradient></defs>
+<text x="410.0" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Variance % vs Budget by Cost Center and Month (Expense)</text>
+<text x="410.0" y="45" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Synthetic sample data, through 2026-09 (9 months). Teal is under budget, orange is over budget.</text>
+<text x="185.0" y="72" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Jan</text>
+<text x="255.0" y="72" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Feb</text>
+<text x="325.0" y="72" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Mar</text>
+<text x="395.0" y="72" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Apr</text>
+<text x="465.0" y="72" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">May</text>
+<text x="535.0" y="72" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Jun</text>
+<text x="605.0" y="72" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Jul</text>
+<text x="675.0" y="72" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Aug</text>
+<text x="745.0" y="72" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Sep</text>
+<text x="140" y="111.0" text-anchor="end" font-size="12" font-weight="normal" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Capital Markets</text>
+<rect x="151.5" y="85.5" width="67.0" height="43.0" rx="4" fill="#222b3b"/>
+<text x="185.0" y="111.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+0.2%</text>
+<rect x="221.5" y="85.5" width="67.0" height="43.0" rx="4" fill="#1f3947"/>
+<text x="255.0" y="111.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-0.9%</text>
+<rect x="291.5" y="85.5" width="67.0" height="43.0" rx="4" fill="#2b2f3b"/>
+<text x="325.0" y="111.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+0.6%</text>
+<rect x="361.5" y="85.5" width="67.0" height="43.0" rx="4" fill="#2d303b"/>
+<text x="395.0" y="111.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+0.7%</text>
+<rect x="431.5" y="85.5" width="67.0" height="43.0" rx="4" fill="#413a3b"/>
+<text x="465.0" y="111.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+1.6%</text>
+<rect x="501.5" y="85.5" width="67.0" height="43.0" rx="4" fill="#664b3b"/>
+<text x="535.0" y="111.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+3.2%</text>
+<rect x="571.5" y="85.5" width="67.0" height="43.0" rx="4" fill="#6f503b"/>
+<text x="605.0" y="111.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+3.7%</text>
+<rect x="641.5" y="85.5" width="67.0" height="43.0" rx="4" fill="#39363b"/>
+<text x="675.0" y="111.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+1.2%</text>
+<rect x="711.5" y="85.5" width="67.0" height="43.0" rx="4" fill="#74523b"/>
+<text x="745.0" y="111.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+3.9%</text>
+<text x="140" y="157.0" text-anchor="end" font-size="12" font-weight="normal" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Credit Reporting</text>
+<rect x="151.5" y="131.5" width="67.0" height="43.0" rx="4" fill="#257979"/>
+<text x="185.0" y="157.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-4.7%</text>
+<rect x="221.5" y="131.5" width="67.0" height="43.0" rx="4" fill="#225c62"/>
+<text x="255.0" y="157.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-3.0%</text>
+<rect x="291.5" y="131.5" width="67.0" height="43.0" rx="4" fill="#225960"/>
+<text x="325.0" y="157.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-2.8%</text>
+<rect x="361.5" y="131.5" width="67.0" height="43.0" rx="4" fill="#204550"/>
+<text x="395.0" y="157.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-1.6%</text>
+<rect x="431.5" y="131.5" width="67.0" height="43.0" rx="4" fill="#257878"/>
+<text x="465.0" y="157.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-4.6%</text>
+<rect x="501.5" y="131.5" width="67.0" height="43.0" rx="4" fill="#257a7a"/>
+<text x="535.0" y="157.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-4.8%</text>
+<rect x="571.5" y="131.5" width="67.0" height="43.0" rx="4" fill="#22545c"/>
+<text x="605.0" y="157.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-2.5%</text>
+<rect x="641.5" y="131.5" width="67.0" height="43.0" rx="4" fill="#225960"/>
+<text x="675.0" y="157.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-2.8%</text>
+<rect x="711.5" y="131.5" width="67.0" height="43.0" rx="4" fill="#214954"/>
+<text x="745.0" y="157.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-1.9%</text>
+<text x="140" y="203.0" text-anchor="end" font-size="12" font-weight="normal" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">FP&amp;A</text>
+<rect x="151.5" y="177.5" width="67.0" height="43.0" rx="4" fill="#214a55"/>
+<text x="185.0" y="203.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-1.9%</text>
+<rect x="221.5" y="177.5" width="67.0" height="43.0" rx="4" fill="#247173"/>
+<text x="255.0" y="203.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-4.2%</text>
+<rect x="291.5" y="177.5" width="67.0" height="43.0" rx="4" fill="#23666a"/>
+<text x="325.0" y="203.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-3.6%</text>
+<rect x="361.5" y="177.5" width="67.0" height="43.0" rx="4" fill="#203e4b"/>
+<text x="395.0" y="203.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-1.2%</text>
+<rect x="431.5" y="177.5" width="67.0" height="43.0" rx="4" fill="#214d57"/>
+<text x="465.0" y="203.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-2.1%</text>
+<rect x="501.5" y="177.5" width="67.0" height="43.0" rx="4" fill="#1f3040"/>
+<text x="535.0" y="203.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-0.4%</text>
+<rect x="571.5" y="177.5" width="67.0" height="43.0" rx="4" fill="#203f4c"/>
+<text x="605.0" y="203.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-1.3%</text>
+<rect x="641.5" y="177.5" width="67.0" height="43.0" rx="4" fill="#20414d"/>
+<text x="675.0" y="203.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-1.4%</text>
+<rect x="711.5" y="177.5" width="67.0" height="43.0" rx="4" fill="#23656a"/>
+<text x="745.0" y="203.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-3.5%</text>
+<text x="140" y="249.0" text-anchor="end" font-size="12" font-weight="normal" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Technology</text>
+<rect x="151.5" y="223.5" width="67.0" height="43.0" rx="4" fill="#443b3b"/>
+<text x="185.0" y="249.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+1.7%</text>
+<rect x="221.5" y="223.5" width="67.0" height="43.0" rx="4" fill="#3e383b"/>
+<text x="255.0" y="249.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+1.5%</text>
+<rect x="291.5" y="223.5" width="67.0" height="43.0" rx="4" fill="#d8813c"/>
+<text x="325.0" y="249.0" text-anchor="middle" font-size="12" fill="#0f172a" font-family="Helvetica, Arial, sans-serif">+8.4%</text>
+<rect x="361.5" y="223.5" width="67.0" height="43.0" rx="4" fill="#cd7c3c"/>
+<text x="395.0" y="249.0" text-anchor="middle" font-size="12" fill="#0f172a" font-family="Helvetica, Arial, sans-serif">+7.9%</text>
+<rect x="431.5" y="223.5" width="67.0" height="43.0" rx="4" fill="#e0853c"/>
+<text x="465.0" y="249.0" text-anchor="middle" font-size="12" fill="#0f172a" font-family="Helvetica, Arial, sans-serif">+8.8%</text>
+<rect x="501.5" y="223.5" width="67.0" height="43.0" rx="4" fill="#b16f3c"/>
+<text x="535.0" y="249.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+6.6%</text>
+<rect x="571.5" y="223.5" width="67.0" height="43.0" rx="4" fill="#bf753c"/>
+<text x="605.0" y="249.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+7.3%</text>
+<rect x="641.5" y="223.5" width="67.0" height="43.0" rx="4" fill="#ca7b3c"/>
+<text x="675.0" y="249.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+7.8%</text>
+<rect x="711.5" y="223.5" width="67.0" height="43.0" rx="4" fill="#c5783c"/>
+<text x="745.0" y="249.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+7.5%</text>
+<line x1="20" x2="790" y1="272.0" y2="272.0" stroke="#475569" stroke-width="0.8"/>
+<text x="140" y="303.0" text-anchor="end" font-size="12" font-weight="bold" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Total</text>
+<rect x="151.5" y="277.5" width="67.0" height="43.0" rx="4" fill="#1f3242"/>
+<text x="185.0" y="303.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-0.5%</text>
+<rect x="221.5" y="277.5" width="67.0" height="43.0" rx="4" fill="#1f3847"/>
+<text x="255.0" y="303.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">-0.9%</text>
+<rect x="291.5" y="277.5" width="67.0" height="43.0" rx="4" fill="#4f403b"/>
+<text x="325.0" y="303.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+2.2%</text>
+<rect x="361.5" y="277.5" width="67.0" height="43.0" rx="4" fill="#58453b"/>
+<text x="395.0" y="303.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+2.6%</text>
+<rect x="431.5" y="277.5" width="67.0" height="43.0" rx="4" fill="#55433b"/>
+<text x="465.0" y="303.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+2.5%</text>
+<rect x="501.5" y="277.5" width="67.0" height="43.0" rx="4" fill="#52423b"/>
+<text x="535.0" y="303.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+2.4%</text>
+<rect x="571.5" y="277.5" width="67.0" height="43.0" rx="4" fill="#62493b"/>
+<text x="605.0" y="303.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+3.1%</text>
+<rect x="641.5" y="277.5" width="67.0" height="43.0" rx="4" fill="#55433b"/>
+<text x="675.0" y="303.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+2.5%</text>
+<rect x="711.5" y="277.5" width="67.0" height="43.0" rx="4" fill="#62493b"/>
+<text x="745.0" y="303.0" text-anchor="middle" font-size="12" fill="#f8fafc" font-family="Helvetica, Arial, sans-serif">+3.1%</text>
+<rect x="80" y="378" width="300" height="10" fill="url(#heatgrad)" rx="2"/>
+<text x="80" y="404" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">-10%</text>
+<text x="230.0" y="404" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">0</text>
+<text x="380" y="404" text-anchor="end" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">+10%</text>
+<text x="400" y="387" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Color saturates at +/-10%.</text>
+</svg>
