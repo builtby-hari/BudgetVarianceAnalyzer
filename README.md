@@ -5,7 +5,7 @@
   </picture>
 </p>
 
-![Python](https://img.shields.io/badge/python-3.9%2B-1f3a5f) ![Tests](https://img.shields.io/badge/tests-63%20passing-14b8a6) ![Dependencies](https://img.shields.io/badge/dependencies-none-1f3a5f) ![License](https://img.shields.io/badge/license-MIT-14b8a6)
+![Python](https://img.shields.io/badge/python-3.9%2B-1f3a5f) ![Dependencies](https://img.shields.io/badge/dependencies-none-1f3a5f) ![License](https://img.shields.io/badge/license-MIT-14b8a6)
 
 A small, dependency-free Python tool that compares budget to actuals by cost
 center, account category, and month, for expense and revenue lines. It produces
@@ -30,6 +30,7 @@ Standard library only (Python 3.9+). No `pip install` needed.
 - [Charts](#charts)
 - [Sample Output](#sample-output)
 - [Methodology](#methodology)
+- [Rolling Forecast](#rolling-forecast)
 - [Optional: Matplotlib Plots](#optional-matplotlib-plots)
 - [Skills Shown](#skills-shown)
 - [Limitations](#limitations)
@@ -45,7 +46,7 @@ Standard library only (Python 3.9+). No `pip install` needed.
   <img alt="Operating Income Bridge from Budget to Actual, One Step per Category, from the Wide Sample (Synthetic Data)" src="docs/bridge.svg" width="100%">
 </picture>
 
-*Operating income bridge, YTD budget to actual by category, from `data/sample_wide.csv` (synthetic, revenue and expense lines, actuals through 2026-12). The steps sum exactly to the favorable variance. The axis is truncated and says where it starts.*
+*Operating income bridge, YTD budget to actual by category, from `data/sample_wide.csv` (synthetic, revenue and expense lines, actuals through 2026-12). The steps sum exactly to the operating income variance. The axis is truncated and says where it starts.*
 
 ## Results at a Glance
 
@@ -74,8 +75,13 @@ anyone acts on it.
 flowchart LR
     A["Budget CSV (Narrow)"] --> L["bva/data.py Loaders"]
     B["Actuals CSV (Narrow)"] --> L
+    F["Forecast CSV (Versions)"] --> FC["bva/forecast.py: Three-Way Variance, Outlook, Accuracy"]
     W["Wide CSV: Budget and Actual in One File"] --> L
     L --> V["bva/variance.py: YTD, Variance, Materiality, Run-Rate, Roll-Ups, Operating Income"]
+    V --> FC
+    FC --> O1
+    FC --> O2
+    FC --> O3
     V --> C["bva/commentary.py: Template Bullets per Cost Center"]
     V --> O1["CLI Summary and Top Drivers"]
     V --> O2["CSV: Line-Level Detail"]
@@ -102,6 +108,9 @@ What it does:
   variance.
 - Projects the full year with a simple run-rate and compares it to budget.
 - Writes template-based commentary bullets per cost center (expense lines).
+- With a forecast file: actual vs forecast, forecast vs budget for open months, a
+  full-year outlook (YTD actuals plus forecast), forecast accuracy (MAPE and bias),
+  and one-line commentary drafts for material lines. See Rolling Forecast.
 - Writes a line-level CSV, an HTML report, and SVG charts.
 
 ## Quickstart
@@ -118,10 +127,17 @@ More:
 python3 cli.py                                          # bundled synthetic data, summary + commentary
 python3 cli.py --budget data/sample_wide.csv            # wide layout with revenue and expense lines
 python3 cli.py --through 2026-06 --top 8                # as of an earlier close
+python3 cli.py --fail-on-material                       # exit 1 if any line is material (scripts, CI)
+python3 cli.py --projection budget-remaining            # full year = YTD actual + remaining budget
+python3 cli.py --allow-missing-actuals                   # count closed months with no actuals as $0 instead of failing
+python3 cli.py --json                                   # machine-readable analysis on stdout
+python3 cli.py --forecast data/forecast.csv             # rolling forecast: outlook, accuracy, commentary drafts
+python3 cli.py --forecast data/forecast.csv --forecast-csv output/outlook.csv --accuracy-csv output/accuracy.csv
+python3 cli.py --pvm data/pvm_example.csv               # revenue price / volume / mix split
 python3 cli.py --amount-threshold 50000 --pct-threshold 5 --run-rate-months 6
 python3 cli.py --csv output/variance_detail.csv --html output/report.html --charts output/charts
 python3 cli.py --budget my_budget.csv --actuals my_actuals.csv
-python3 -m unittest discover -v                         # run the tests (63)
+python3 -m unittest discover -v                         # run the tests
 python3 -m bva.charts                                   # regenerate every SVG in docs/ (light and dark)
 python3 data/generate_sample.py                         # regenerate the synthetic data
 python3 plots_mpl.py                                    # optional PNGs in docs/mpl (needs matplotlib)
@@ -133,7 +149,7 @@ month present in the actuals. Materiality thresholds are `--amount-threshold`
 be strictly above both to be flagged.
 
 Two sample reports are in `docs/` (open them in a browser): `sample_report.html`
-(expense-only data) and `sample_report_wide.html` (revenue and expense, with the
+(expense-only data, with the Rolling Forecast section from `data/forecast.csv`) and `sample_report_wide.html` (revenue and expense, with the
 operating-income section and bridge).
 
 ### Input Formats
@@ -143,6 +159,8 @@ Narrow (one file for budget, one for actuals):
 ```
 cost_center,category,month,amount[,type]
 ```
+
+Amounts may use commas, a dollar sign, or accounting negatives such as `(1,200)`. `nan` and `inf` are rejected.
 
 Wide (one file with both budget and actual):
 
@@ -157,6 +175,20 @@ month,department,line_item,type,budget,actual
   `type` column means expense. Any other value raises an error that names the row.
 - A line cannot be revenue in one row and expense in another. That raises an error too.
 - Lines starting with `#` are comments. Duplicate keys are summed.
+
+Forecast (a third file, `--forecast`):
+
+```
+cost_center,category,month,amount[,as_of]
+```
+
+- `as_of` (YYYY-MM) is the last closed month when that forecast version was made, so a
+  version made after the March close has `as_of` 2026-03 and covers April onward. A row
+  must be for a month after its `as_of`. Several versions of the same month can sit in one file.
+- Without an `as_of` column the file is treated as one latest version: the outlook works,
+  but accuracy cannot be measured.
+- The lines match the budget file by cost center and category. With a wide budget file, use
+  its department and line item names.
 
 ## Charts
 
@@ -262,7 +294,7 @@ Commentary:
 Commentary states what moved and by how much. It deliberately does not assert a
 cause; the cost-center owner supplies the why. Commentary covers expense cost centers.
 
-Note that the Credit Reporting salaries line is the third-largest dollar variance, but it is not
+The Credit Reporting salaries line is the third-largest dollar variance, but it is not
 flagged material: $201K clears the dollar test, but 5.2% does not clear the percentage
 test. That is the point of requiring both.
 
@@ -298,6 +330,7 @@ is the change in operating income. Positive always means favorable there.
 | Variance % | `(A - B) / abs(B)`; undefined (n/a) when `B = 0` |
 | Material | `abs(A - B) > 25,000` **and** `abs(var %) > 10%` (both strict, both configurable; if `B = 0` only the $ test applies) |
 | Run-rate projection | `FY_proj = A + m * avg(last k closed months of actual)`, default `k = 3` (`0` = average all YTD months) |
+| Budget-remaining projection (`--projection budget-remaining`) | `FY_proj = A + sum(budget of the remaining m months)`: assumes the rest of the year lands on plan, so projected variance equals YTD variance |
 | Projected variance | `FY_proj - full-year budget` |
 | Top drivers | lines sorted by `abs(variance $)`, descending |
 | Operating income (OI) | `OI = sum(revenue) - sum(expense)`, YTD, for budget (`OI_B`) and actual (`OI_A`) |
@@ -319,11 +352,100 @@ lines" step so the bars close, and ends at YTD actual.
 
 The bridge starts at budget operating income, adds one step per category (largest
 favorable step first), and ends at actual operating income. The steps sum exactly to
-the operating-income favorable variance; the tests check this. Its y-axis is
+the operating-income variance (actual less budget); the tests check this. Its y-axis is
 truncated, with the start stated in the title, and the total bars hang from the axis
 floor.
 
+### Price, Volume, Mix (`--pvm`)
+
+Optional and separate from the line-level analysis: it needs unit quantities and prices, which the
+amount CSVs do not carry. Input columns: `product, budget_qty, budget_price, actual_qty, actual_price`.
+With `BQ, BP` budget and `AQ, AP` actual per product:
+
+| Item | Formula |
+|---|---|
+| Price | `sum((AP - BP) * AQ)`, which is actual revenue minus the flexed budget |
+| Flexed budget | `sum(AQ * BP)`: actual units at budget prices |
+| Volume | `(sum(AQ) - sum(BQ)) * sum(BQ*BP) / sum(BQ)`: total unit change at the average budget price |
+| Mix | `sum((AQ - sum(AQ) * BQ / sum(BQ)) * BP)`: what is left of flexed minus static budget |
+
+Price + volume + mix equals actual minus budget revenue exactly. Volume + mix is the sales volume
+variance (flexed minus static budget); price is the flexible budget variance. Positive is favorable.
+`data/pvm_example.csv` is the three-product example from the Zebra BI article below: price is
+46,750 and volume + mix is 11,500, matching it. The article leaves mix as a residual and its
+own mix formula gives a different split, so volume and mix here follow the CMA-style definitions
+(volume at the average budget price, mix against the budget mix). Conventions differ between sources;
+state which one you use. Cost-side (expense) flexing is not implemented.
+
+Sources: [Zebra BI, price volume mix analysis](https://zebrabi.com/price-volume-mix-analysis-excel/),
+[Lumen Learning, sales volume variance](https://courses.lumenlearning.com/wm-managerialaccounting/?p=1098),
+[Achievable CMA, flexible budget variance](https://app.achievable.me/study/cma-part-1/learn/performance-management-cost-and-variance-measures-flexible-budgets-the-flexible-budget-variance).
+Projection method background: [Oracle trend methods](https://docs.oracle.com/en/cloud/saas/planning-budgeting-cloud/epbug/fin_trend_descriptions_100xa8257468.html),
+[Calxa, YTD actuals plus remaining budget](https://helpme.calxa.com/en/articles/5272475-ytd-full-year-forecast-vs-approved).
+
 **Fiscal year** is the calendar year of the last closed month.
+
+## Rolling Forecast
+
+Pass `--forecast` to add the forecast views. The sample is `data/forecast.csv`
+(synthetic, versions as of 2026-03, 2026-06 and 2026-09).
+
+Three views per line, using the same sign convention as above:
+
+| View | Months | Compares |
+|---|---|---|
+| Actual vs budget | Closed | The existing YTD variance |
+| Actual vs forecast | Closed months that had a prior forecast | Actual against the latest version made before that month |
+| Forecast vs budget | Open | Latest forecast against budget for the remaining months |
+
+**Outlook** is the standard "actuals plus forecast": `Outlook = YTD actual + latest forecast for each open month`,
+compared with the full-year budget. The latest forecast for an open month is the version with the
+greatest `as_of` on or before the close. Versions dated after `--through` are ignored and noted.
+Total Expense and Total Revenue rows sum the lines of each type.
+
+**Forecast accuracy** needs versions. For each closed month with a prior forecast version (the latest
+version with `as_of` before that month), `error = forecast - actual`. Per line:
+
+| Item | Formula |
+|---|---|
+| MAPE | mean of `abs(actual - forecast) / abs(actual)` over the months with a nonzero actual |
+| Bias $ | sum of `forecast - actual`. Positive is over-forecast, negative is under-forecast |
+| Bias % | bias $ / `abs(sum of actual)` |
+
+Accuracy is also pooled at the Total Expense and Total Revenue level. **Weighted MAPE** is
+`sum(abs(actual - forecast)) / sum(abs(actual))` over every line-month, so large lines count more than small
+ones, and the pooled bias is the sum of `forecast - actual` over the same line-months. The same pooling by
+**horizon** (months from the version's `as_of` to the month) shows whether longer-range forecasts miss more.
+It appears in the CLI summary and the HTML report.
+
+MAPE says how far off the forecast was on average, and bias says which way it leaned.
+A line can have a low MAPE and a large bias if it misses the same way every month.
+
+**Commentary drafts** are one sentence for each line that is material by the existing test, applied
+to either the YTD variance or the outlook variance. Each draft gives YTD against budget, the result against
+the prior forecast, and the outlook against the full-year budget, with favorable or unfavorable by line
+type. They are fixed templates that state what moved, not why. The owner of the line supplies the cause.
+
+**Charts.** The outlook chart bridges the full-year expense budget to the outlook, one step per
+driver line, with the axis truncated and labeled. The accuracy chart ranks the ten worst lines by MAPE and
+puts the pooled weighted MAPE in its subtitle. Both are in the HTML report's Rolling Forecast section
+and regenerate with `python3 -m bva.charts`.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/forecast-outlook-dark.svg">
+  <img alt="Waterfall from the Full-Year Expense Budget to the Outlook by Driver Line, from the Synthetic Sample" src="docs/forecast-outlook.svg" width="100%">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/forecast-accuracy-dark.svg">
+  <img alt="Horizontal Bar Chart of Forecast MAPE by Line, from the Synthetic Sample" src="docs/forecast-accuracy.svg" width="100%">
+</picture>
+
+**Missing data fails closed.** A line with no forecast for an open month raises an error that names the
+line and month. Nothing is filled in from budget.
+
+Output goes to the CLI summary, the HTML report (a Rolling Forecast section), and two CSVs:
+`--forecast-csv` for the outlook rows and `--accuracy-csv` for MAPE and bias.
 
 ## Optional: Matplotlib Plots
 
@@ -345,17 +467,22 @@ Python · FP&A variance analysis · Operating income bridge · Materiality rules
 
 ## Limitations
 
-- **Run-rate is naive.** It extends recent months flat, so it ignores
+- Run-rate is naive. It extends recent months flat, so it ignores
   seasonality, known one-time items, hiring plans, and contract step-ups. It
   is a sanity check against budget, not a forecast.
 - Revenue is a line type, not a full P&L structure. There are no contra-revenue,
   gross-to-net, or cost-of-sales subtotals. Cost-center and total rows cover
   expense lines only.
+- The price/volume/mix split covers revenue only and is a separate input file.
 - The operating-income total is YTD only. It has no full-year projection.
-- There is no budget phasing logic beyond what is in the file, and no prior-year or
-  rolling-forecast comparison.
-- Missing actuals for a closed month are treated as $0 (with a warning), which
-  could overstate a favorable variance if a feed is late.
+- There is no budget phasing logic beyond what is in the file, and no prior-year comparison.
+- Forecast accuracy compares each month with the latest version made before it. Months with
+  a zero actual are left out of MAPE.
+- The forecast file is the narrow layout only.
+- A closed month with no actuals for a line is an error, because a late feed would
+  otherwise look like a favorable variance. `--allow-missing-actuals` counts those
+  months as $0 in YTD (with a warning) and leaves them out of the run-rate average.
+  Under `budget-remaining` they still add $0, so the projection is understated.
 - Materiality is a fixed dollar-and-percent rule applied per line; real
   policies often vary by account or cost center.
 - Commentary is template text with no causal explanation, and has no
@@ -366,27 +493,27 @@ Python · FP&A variance analysis · Operating income bridge · Materiality rules
 
 ### Next Steps
 
-1. Support a rolling forecast file (budget, latest forecast, actuals) with
-   three-way variance.
-2. Price/volume or headcount/rate decomposition for compensation lines.
-3. Seasonal run-rate using prior-year phasing.
-4. Per-category materiality thresholds from a config file.
-5. Excel export with formulas, so reviewers can trace each number.
+1. Headcount/rate decomposition for compensation lines, and price/volume on the line-level data.
+2. Seasonal run-rate using prior-year phasing.
+3. Per-category materiality thresholds from a config file.
+4. Excel export with formulas, so reviewers can trace each number.
 
 ## Project Layout
 
 ```
 bva/data.py         CSV loaders: narrow and wide layouts, type column, validation
 bva/variance.py     variance, materiality, YTD, run-rate, roll-ups, operating income, bridge steps, top drivers
-bva/commentary.py   template-based commentary
+bva/commentary.py   template-based commentary, plus forecast commentary drafts
 bva/charts.py       hand-written SVG charts, light and dark: bridge, line items, heatmap, cumulative, flagged, banner, terminal output
+bva/forecast.py     rolling forecast: three-way variance, outlook, accuracy (MAPE, bias)
+bva/pvm.py          price / volume / mix split and flexed budget
 bva/report.py       static HTML report and CSV writer
 cli.py              command line interface
 plots_mpl.py        optional matplotlib PNG versions of the main charts (needs requirements-extra.txt)
 requirements-extra.txt  optional dependency list (matplotlib)
-data/               synthetic budget.csv, actuals.csv (narrow), sample_wide.csv (wide), seeded generator
+data/               synthetic budget.csv, actuals.csv (narrow), forecast.csv (versions), sample_wide.csv (wide), seeded generator
 docs/               README SVGs (light and dark), sample HTML reports, docs/mpl/ optional PNGs
-tests/              unittest suite (63 tests; one skipped without matplotlib)
+tests/              unittest suite
 ```
 
 ## Data Sources
@@ -405,21 +532,24 @@ MIT. See `LICENSE`.
 | Accrual | Recording a cost or sale in the month it happens, even if the bill or cash comes later, like writing down a dinner tab when you eat. |
 | Actuals | What was really spent or earned, as opposed to what was planned. |
 | Allocation | Splitting a shared cost, like rent for an office, among the teams that use it. |
-| Bridge (Waterfall) | A step chart that starts at one total, adds or subtracts each cause, and ends at the final number, like walking up or down a staircase. |
+| Bias | Whether forecasts lean high or low. Forecast minus actual, so positive means the forecast was too high. |
+| Bridge (waterfall) | A step chart that starts at one total, adds or subtracts each cause, and ends at the final number, like walking up or down a staircase. |
 | Budget | The plan for how much to spend or earn in a period, like a monthly spending plan. |
-| Closed Month | A month whose books are finished, so no more changes are expected, like a store's register closed for the night. |
-| Cost Center | A team or department that tracks its own spending. |
+| Closed month | A month whose books are finished, so no more changes are expected, like a store's register closed for the night. |
+| Cost center | A team or department that tracks its own spending. |
 | Expense | Money spent to run the business, like salaries or software. |
-| Favorable / Unfavorable | Whether a variance helps profit (favorable) or hurts it (unfavorable). |
+| Favorable / unfavorable | Whether a variance helps profit (favorable) or hurts it (unfavorable). |
 | FP&A | Financial planning and analysis: the team that sets budgets, tracks results and explains the differences. |
-| Full-Year Budget (FY) | The whole-year plan, covering all twelve months. |
-| General Ledger (GL) | The master record book where every financial transaction is written down. |
-| Gross Budget | All budget amounts added together, ignoring plus and minus signs, used as the base for the operating income change. |
+| Full-year budget (FY) | The whole-year plan, covering all twelve months. |
+| General ledger (GL) | The master record book where every financial transaction is written down. |
+| Gross budget | All budget amounts added together, ignoring plus and minus signs, used as the base for the operating income change. |
+| MAPE | Mean absolute percent error: on average, how far off the forecast was, ignoring direction. |
 | Materiality | A threshold for what is big enough to deserve attention; here a variance must clear both a dollar and a percent test. |
-| Operating Income | Money left from sales after paying the costs of running the business, before interest and taxes. |
+| Operating income | Money left from sales after paying the costs of running the business, before interest and taxes. |
+| Outlook | Where the full year is heading: actuals so far plus the forecast for the months left. |
 | Reclass | Moving a recorded amount from one account to another, like moving a receipt from the wrong folder into the right one. |
 | Revenue | Money coming in from sales or services. |
-| Run-Rate | A projection that assumes recent months continue at the same pace, like estimating a trip's total time from your average speed. |
+| Run-rate | A projection that assumes recent months continue at the same pace, like estimating a trip's total time from your average speed. |
 | Seasonality | Patterns that repeat at certain times of year, like stores selling more in December. |
 | Variance | The gap between actual results and the budget. |
 | YTD | Year to date: totals from January through the latest closed month. |

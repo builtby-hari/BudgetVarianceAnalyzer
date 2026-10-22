@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 540" width="820" height="540" role="img" aria-label="Full-Year Expense Outlook vs Budget by Driver (Through 2026-09)">
+<rect width="820" height="540" fill="#ffffff"/>
+<text x="410.0" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#334155" font-family="Helvetica, Arial, sans-serif">Full-Year Expense Outlook vs Budget by Driver (Through 2026-09)</text>
+<text x="410.0" y="45" text-anchor="middle" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">Synthetic sample data. Axis truncated, not from zero.</text>
+<line x1="80" x2="790" y1="304.6" y2="304.6" stroke="#cbd5e1" stroke-width="0.8"/>
+<text x="72" y="308.6" text-anchor="end" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">$39.0M</text>
+<line x1="80" x2="790" y1="194.9" y2="194.9" stroke="#cbd5e1" stroke-width="0.8"/>
+<text x="72" y="198.9" text-anchor="end" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">$39.5M</text>
+<line x1="80" x2="790" y1="85.1" y2="85.1" stroke="#cbd5e1" stroke-width="0.8"/>
+<text x="72" y="89.1" text-anchor="end" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">$40.0M</text>
+<line x1="80" x2="80" y1="55" y2="365" stroke="#334155"/>
+<line x1="80" x2="790" y1="365" y2="365" stroke="#334155"/>
+<text transform="translate(18 210.0) rotate(-90)" text-anchor="middle" font-size="12" fill="#334155" font-family="Helvetica, Arial, sans-serif">Full-Year Spend</text>
+<rect x="95.0" y="291.2" width="48.9" height="73.8" fill="#94a3b8"/>
+<text x="119.4" y="286.2" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">$39.1M</text>
+<text transform="translate(119.4 379) rotate(35)" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">FY Budget</text>
+<rect x="173.9" y="149.1" width="48.9" height="142.1" fill="#c2410c"/>
+<text x="198.3" y="144.1" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">+$647K</text>
+<text transform="translate(198.3 379) rotate(35)" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">Technology: Contractors</text>
+<line x1="143.9" x2="173.9" y1="291.2" y2="291.2" stroke="#334155" stroke-dasharray="3 3" stroke-width="0.8"/>
+<rect x="252.8" y="80.3" width="48.9" height="68.8" fill="#c2410c"/>
+<text x="277.2" y="75.3" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">+$313K</text>
+<text transform="translate(277.2 379) rotate(35)" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">Technology: Software &amp; Data</text>
+<line x1="222.8" x2="252.8" y1="149.1" y2="149.1" stroke="#334155" stroke-dasharray="3 3" stroke-width="0.8"/>
+<rect x="331.7" y="80.3" width="48.9" height="52.1" fill="#14b8a6"/>
+<text x="356.1" y="75.3" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">-$238K</text>
+<text transform="translate(356.1 379) rotate(35)" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">Credit Reporting: Salaries &amp; Bene...</text>
+<line x1="301.7" x2="331.7" y1="80.3" y2="80.3" stroke="#334155" stroke-dasharray="3 3" stroke-width="0.8"/>
+<rect x="410.5" y="93.8" width="48.9" height="38.7" fill="#c2410c"/>
+<text x="435.0" y="88.8" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">+$176K</text>
+<text transform="translate(435.0 379) rotate(35)" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">Capital Markets: Travel &amp; Training</text>
+<line x1="380.6" x2="410.5" y1="132.5" y2="132.5" stroke="#334155" stroke-dasharray="3 3" stroke-width="0.8"/>
+<rect x="489.4" y="93.8" width="48.9" height="28.2" fill="#14b8a6"/>
+<text x="513.9" y="88.8" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">-$128K</text>
+<text transform="translate(513.9 379) rotate(35)" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">FP&amp;A: Professional Services</text>
+<line x1="459.5" x2="489.4" y1="93.8" y2="93.8" stroke="#334155" stroke-dasharray="3 3" stroke-width="0.8"/>
+<rect x="568.3" y="104.6" width="48.9" height="17.3" fill="#c2410c"/>
+<text x="592.8" y="99.6" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">+$79K</text>
+<text transform="translate(592.8 379) rotate(35)" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">Capital Markets: Software &amp; Data</text>
+<line x1="538.3" x2="568.3" y1="122.0" y2="122.0" stroke="#334155" stroke-dasharray="3 3" stroke-width="0.8"/>
+<rect x="647.2" y="104.6" width="48.9" height="4.1" fill="#14b8a6"/>
+<text x="671.7" y="99.6" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">-$19K</text>
+<text transform="translate(671.7 379) rotate(35)" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">All Other Lines</text>
+<line x1="617.2" x2="647.2" y1="104.6" y2="104.6" stroke="#334155" stroke-dasharray="3 3" stroke-width="0.8"/>
+<rect x="726.1" y="108.7" width="48.9" height="256.3" fill="#1f3a5f"/>
+<text x="750.6" y="103.7" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">$39.9M</text>
+<text transform="translate(750.6 379) rotate(35)" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">FY Outlook</text>
+<rect x="80" y="519" width="10" height="10" fill="#c2410c"/>
+<text x="95" y="528" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">Over Budget (Unfavorable)</text>
+<rect x="277.0" y="519" width="10" height="10" fill="#14b8a6"/>
+<text x="292.0" y="528" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">Under Budget (Favorable)</text>
+</svg>

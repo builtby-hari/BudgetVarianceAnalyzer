@@ -1,0 +1,434 @@
+# SYNTHETIC SAMPLE DATA (FY2026 forecast versions as of 2026-03, 2026-06 and 2026-09): invented cost centers and amounts, not real financials.
+cost_center,category,month,amount,as_of
+Credit Reporting,Salaries & Benefits,2026-04,402000,2026-03
+Credit Reporting,Salaries & Benefits,2026-05,407800,2026-03
+Credit Reporting,Salaries & Benefits,2026-06,400500,2026-03
+Credit Reporting,Salaries & Benefits,2026-07,405500,2026-03
+Credit Reporting,Salaries & Benefits,2026-08,406900,2026-03
+Credit Reporting,Salaries & Benefits,2026-09,415000,2026-03
+Credit Reporting,Salaries & Benefits,2026-10,403300,2026-03
+Credit Reporting,Salaries & Benefits,2026-11,403200,2026-03
+Credit Reporting,Salaries & Benefits,2026-12,410000,2026-03
+Credit Reporting,Salaries & Benefits,2026-07,405200,2026-06
+Credit Reporting,Salaries & Benefits,2026-08,412000,2026-06
+Credit Reporting,Salaries & Benefits,2026-09,402000,2026-06
+Credit Reporting,Salaries & Benefits,2026-10,411500,2026-06
+Credit Reporting,Salaries & Benefits,2026-11,405700,2026-06
+Credit Reporting,Salaries & Benefits,2026-12,404900,2026-06
+Credit Reporting,Salaries & Benefits,2026-10,419600,2026-09
+Credit Reporting,Salaries & Benefits,2026-11,422700,2026-09
+Credit Reporting,Salaries & Benefits,2026-12,421400,2026-09
+Credit Reporting,Contractors,2026-04,75600,2026-03
+Credit Reporting,Contractors,2026-05,75000,2026-03
+Credit Reporting,Contractors,2026-06,76500,2026-03
+Credit Reporting,Contractors,2026-07,75300,2026-03
+Credit Reporting,Contractors,2026-08,75300,2026-03
+Credit Reporting,Contractors,2026-09,74900,2026-03
+Credit Reporting,Contractors,2026-10,75700,2026-03
+Credit Reporting,Contractors,2026-11,74800,2026-03
+Credit Reporting,Contractors,2026-12,76700,2026-03
+Credit Reporting,Contractors,2026-07,74700,2026-06
+Credit Reporting,Contractors,2026-08,75800,2026-06
+Credit Reporting,Contractors,2026-09,74500,2026-06
+Credit Reporting,Contractors,2026-10,76100,2026-06
+Credit Reporting,Contractors,2026-11,75900,2026-06
+Credit Reporting,Contractors,2026-12,76200,2026-06
+Credit Reporting,Contractors,2026-10,76100,2026-09
+Credit Reporting,Contractors,2026-11,73700,2026-09
+Credit Reporting,Contractors,2026-12,75000,2026-09
+Credit Reporting,Software & Data,2026-04,58900,2026-03
+Credit Reporting,Software & Data,2026-05,58300,2026-03
+Credit Reporting,Software & Data,2026-06,60000,2026-03
+Credit Reporting,Software & Data,2026-07,58600,2026-03
+Credit Reporting,Software & Data,2026-08,59000,2026-03
+Credit Reporting,Software & Data,2026-09,59400,2026-03
+Credit Reporting,Software & Data,2026-10,58300,2026-03
+Credit Reporting,Software & Data,2026-11,57800,2026-03
+Credit Reporting,Software & Data,2026-12,59500,2026-03
+Credit Reporting,Software & Data,2026-07,58100,2026-06
+Credit Reporting,Software & Data,2026-08,58400,2026-06
+Credit Reporting,Software & Data,2026-09,57900,2026-06
+Credit Reporting,Software & Data,2026-10,56900,2026-06
+Credit Reporting,Software & Data,2026-11,57200,2026-06
+Credit Reporting,Software & Data,2026-12,56800,2026-06
+Credit Reporting,Software & Data,2026-10,59300,2026-09
+Credit Reporting,Software & Data,2026-11,60000,2026-09
+Credit Reporting,Software & Data,2026-12,59800,2026-09
+Credit Reporting,Travel & Training,2026-04,14700,2026-03
+Credit Reporting,Travel & Training,2026-05,15800,2026-03
+Credit Reporting,Travel & Training,2026-06,12500,2026-03
+Credit Reporting,Travel & Training,2026-07,7500,2026-03
+Credit Reporting,Travel & Training,2026-08,8700,2026-03
+Credit Reporting,Travel & Training,2026-09,17000,2026-03
+Credit Reporting,Travel & Training,2026-10,18300,2026-03
+Credit Reporting,Travel & Training,2026-11,15000,2026-03
+Credit Reporting,Travel & Training,2026-12,10000,2026-03
+Credit Reporting,Travel & Training,2026-07,7500,2026-06
+Credit Reporting,Travel & Training,2026-08,8800,2026-06
+Credit Reporting,Travel & Training,2026-09,17600,2026-06
+Credit Reporting,Travel & Training,2026-10,18700,2026-06
+Credit Reporting,Travel & Training,2026-11,15100,2026-06
+Credit Reporting,Travel & Training,2026-12,9900,2026-06
+Credit Reporting,Travel & Training,2026-10,18800,2026-09
+Credit Reporting,Travel & Training,2026-11,15200,2026-09
+Credit Reporting,Travel & Training,2026-12,10000,2026-09
+Credit Reporting,Professional Services,2026-04,39100,2026-03
+Credit Reporting,Professional Services,2026-05,40100,2026-03
+Credit Reporting,Professional Services,2026-06,44400,2026-03
+Credit Reporting,Professional Services,2026-07,40100,2026-03
+Credit Reporting,Professional Services,2026-08,40000,2026-03
+Credit Reporting,Professional Services,2026-09,54000,2026-03
+Credit Reporting,Professional Services,2026-10,64400,2026-03
+Credit Reporting,Professional Services,2026-11,70100,2026-03
+Credit Reporting,Professional Services,2026-12,64000,2026-03
+Credit Reporting,Professional Services,2026-07,40200,2026-06
+Credit Reporting,Professional Services,2026-08,39400,2026-06
+Credit Reporting,Professional Services,2026-09,54500,2026-06
+Credit Reporting,Professional Services,2026-10,65000,2026-06
+Credit Reporting,Professional Services,2026-11,69400,2026-06
+Credit Reporting,Professional Services,2026-12,65800,2026-06
+Credit Reporting,Professional Services,2026-10,65700,2026-09
+Credit Reporting,Professional Services,2026-11,70000,2026-09
+Credit Reporting,Professional Services,2026-12,64300,2026-09
+Credit Reporting,Facilities & Other,2026-04,55500,2026-03
+Credit Reporting,Facilities & Other,2026-05,54000,2026-03
+Credit Reporting,Facilities & Other,2026-06,54700,2026-03
+Credit Reporting,Facilities & Other,2026-07,54400,2026-03
+Credit Reporting,Facilities & Other,2026-08,54900,2026-03
+Credit Reporting,Facilities & Other,2026-09,55400,2026-03
+Credit Reporting,Facilities & Other,2026-10,55100,2026-03
+Credit Reporting,Facilities & Other,2026-11,54500,2026-03
+Credit Reporting,Facilities & Other,2026-12,54900,2026-03
+Credit Reporting,Facilities & Other,2026-07,55100,2026-06
+Credit Reporting,Facilities & Other,2026-08,55200,2026-06
+Credit Reporting,Facilities & Other,2026-09,53600,2026-06
+Credit Reporting,Facilities & Other,2026-10,54600,2026-06
+Credit Reporting,Facilities & Other,2026-11,53800,2026-06
+Credit Reporting,Facilities & Other,2026-12,54100,2026-06
+Credit Reporting,Facilities & Other,2026-10,54700,2026-09
+Credit Reporting,Facilities & Other,2026-11,54800,2026-09
+Credit Reporting,Facilities & Other,2026-12,54000,2026-09
+Capital Markets,Salaries & Benefits,2026-04,602600,2026-03
+Capital Markets,Salaries & Benefits,2026-05,602100,2026-03
+Capital Markets,Salaries & Benefits,2026-06,616000,2026-03
+Capital Markets,Salaries & Benefits,2026-07,598000,2026-03
+Capital Markets,Salaries & Benefits,2026-08,601600,2026-03
+Capital Markets,Salaries & Benefits,2026-09,597600,2026-03
+Capital Markets,Salaries & Benefits,2026-10,606800,2026-03
+Capital Markets,Salaries & Benefits,2026-11,614000,2026-03
+Capital Markets,Salaries & Benefits,2026-12,598900,2026-03
+Capital Markets,Salaries & Benefits,2026-07,606700,2026-06
+Capital Markets,Salaries & Benefits,2026-08,611100,2026-06
+Capital Markets,Salaries & Benefits,2026-09,604500,2026-06
+Capital Markets,Salaries & Benefits,2026-10,618200,2026-06
+Capital Markets,Salaries & Benefits,2026-11,609900,2026-06
+Capital Markets,Salaries & Benefits,2026-12,600000,2026-06
+Capital Markets,Salaries & Benefits,2026-10,607800,2026-09
+Capital Markets,Salaries & Benefits,2026-11,629500,2026-09
+Capital Markets,Salaries & Benefits,2026-12,611900,2026-09
+Capital Markets,Contractors,2026-04,65100,2026-03
+Capital Markets,Contractors,2026-05,65500,2026-03
+Capital Markets,Contractors,2026-06,66000,2026-03
+Capital Markets,Contractors,2026-07,66400,2026-03
+Capital Markets,Contractors,2026-08,66700,2026-03
+Capital Markets,Contractors,2026-09,65300,2026-03
+Capital Markets,Contractors,2026-10,66600,2026-03
+Capital Markets,Contractors,2026-11,66700,2026-03
+Capital Markets,Contractors,2026-12,67500,2026-03
+Capital Markets,Contractors,2026-07,68300,2026-06
+Capital Markets,Contractors,2026-08,67000,2026-06
+Capital Markets,Contractors,2026-09,68300,2026-06
+Capital Markets,Contractors,2026-10,67800,2026-06
+Capital Markets,Contractors,2026-11,66400,2026-06
+Capital Markets,Contractors,2026-12,67500,2026-06
+Capital Markets,Contractors,2026-10,69000,2026-09
+Capital Markets,Contractors,2026-11,67900,2026-09
+Capital Markets,Contractors,2026-12,67100,2026-09
+Capital Markets,Software & Data,2026-04,127000,2026-03
+Capital Markets,Software & Data,2026-05,123600,2026-03
+Capital Markets,Software & Data,2026-06,125500,2026-03
+Capital Markets,Software & Data,2026-07,126700,2026-03
+Capital Markets,Software & Data,2026-08,123500,2026-03
+Capital Markets,Software & Data,2026-09,124100,2026-03
+Capital Markets,Software & Data,2026-10,124100,2026-03
+Capital Markets,Software & Data,2026-11,126000,2026-03
+Capital Markets,Software & Data,2026-12,127100,2026-03
+Capital Markets,Software & Data,2026-07,131200,2026-06
+Capital Markets,Software & Data,2026-08,131100,2026-06
+Capital Markets,Software & Data,2026-09,130500,2026-06
+Capital Markets,Software & Data,2026-10,133400,2026-06
+Capital Markets,Software & Data,2026-11,131100,2026-06
+Capital Markets,Software & Data,2026-12,131300,2026-06
+Capital Markets,Software & Data,2026-10,132100,2026-09
+Capital Markets,Software & Data,2026-11,136200,2026-09
+Capital Markets,Software & Data,2026-12,136800,2026-09
+Capital Markets,Travel & Training,2026-04,71900,2026-03
+Capital Markets,Travel & Training,2026-05,78900,2026-03
+Capital Markets,Travel & Training,2026-06,61100,2026-03
+Capital Markets,Travel & Training,2026-07,35900,2026-03
+Capital Markets,Travel & Training,2026-08,42900,2026-03
+Capital Markets,Travel & Training,2026-09,85300,2026-03
+Capital Markets,Travel & Training,2026-10,90400,2026-03
+Capital Markets,Travel & Training,2026-11,72900,2026-03
+Capital Markets,Travel & Training,2026-12,47800,2026-03
+Capital Markets,Travel & Training,2026-07,39900,2026-06
+Capital Markets,Travel & Training,2026-08,45800,2026-06
+Capital Markets,Travel & Training,2026-09,91200,2026-06
+Capital Markets,Travel & Training,2026-10,96000,2026-06
+Capital Markets,Travel & Training,2026-11,77300,2026-06
+Capital Markets,Travel & Training,2026-12,52700,2026-06
+Capital Markets,Travel & Training,2026-10,98800,2026-09
+Capital Markets,Travel & Training,2026-11,78600,2026-09
+Capital Markets,Travel & Training,2026-12,53400,2026-09
+Capital Markets,Professional Services,2026-04,29300,2026-03
+Capital Markets,Professional Services,2026-05,29500,2026-03
+Capital Markets,Professional Services,2026-06,33500,2026-03
+Capital Markets,Professional Services,2026-07,29500,2026-03
+Capital Markets,Professional Services,2026-08,30000,2026-03
+Capital Markets,Professional Services,2026-09,40700,2026-03
+Capital Markets,Professional Services,2026-10,48100,2026-03
+Capital Markets,Professional Services,2026-11,52200,2026-03
+Capital Markets,Professional Services,2026-12,49300,2026-03
+Capital Markets,Professional Services,2026-07,30500,2026-06
+Capital Markets,Professional Services,2026-08,30100,2026-06
+Capital Markets,Professional Services,2026-09,42000,2026-06
+Capital Markets,Professional Services,2026-10,49100,2026-06
+Capital Markets,Professional Services,2026-11,52500,2026-06
+Capital Markets,Professional Services,2026-12,50200,2026-06
+Capital Markets,Professional Services,2026-10,49400,2026-09
+Capital Markets,Professional Services,2026-11,53800,2026-09
+Capital Markets,Professional Services,2026-12,48300,2026-09
+Capital Markets,Facilities & Other,2026-04,63800,2026-03
+Capital Markets,Facilities & Other,2026-05,61900,2026-03
+Capital Markets,Facilities & Other,2026-06,63100,2026-03
+Capital Markets,Facilities & Other,2026-07,63500,2026-03
+Capital Markets,Facilities & Other,2026-08,62800,2026-03
+Capital Markets,Facilities & Other,2026-09,63200,2026-03
+Capital Markets,Facilities & Other,2026-10,62800,2026-03
+Capital Markets,Facilities & Other,2026-11,63400,2026-03
+Capital Markets,Facilities & Other,2026-12,62100,2026-03
+Capital Markets,Facilities & Other,2026-07,62000,2026-06
+Capital Markets,Facilities & Other,2026-08,62800,2026-06
+Capital Markets,Facilities & Other,2026-09,63400,2026-06
+Capital Markets,Facilities & Other,2026-10,62100,2026-06
+Capital Markets,Facilities & Other,2026-11,63200,2026-06
+Capital Markets,Facilities & Other,2026-12,63400,2026-06
+Capital Markets,Facilities & Other,2026-10,65000,2026-09
+Capital Markets,Facilities & Other,2026-11,64800,2026-09
+Capital Markets,Facilities & Other,2026-12,64700,2026-09
+FP&A,Salaries & Benefits,2026-04,269800,2026-03
+FP&A,Salaries & Benefits,2026-05,266500,2026-03
+FP&A,Salaries & Benefits,2026-06,268500,2026-03
+FP&A,Salaries & Benefits,2026-07,270800,2026-03
+FP&A,Salaries & Benefits,2026-08,270600,2026-03
+FP&A,Salaries & Benefits,2026-09,269400,2026-03
+FP&A,Salaries & Benefits,2026-10,273700,2026-03
+FP&A,Salaries & Benefits,2026-11,270200,2026-03
+FP&A,Salaries & Benefits,2026-12,271200,2026-03
+FP&A,Salaries & Benefits,2026-07,279100,2026-06
+FP&A,Salaries & Benefits,2026-08,273700,2026-06
+FP&A,Salaries & Benefits,2026-09,273200,2026-06
+FP&A,Salaries & Benefits,2026-10,274000,2026-06
+FP&A,Salaries & Benefits,2026-11,271700,2026-06
+FP&A,Salaries & Benefits,2026-12,272600,2026-06
+FP&A,Salaries & Benefits,2026-10,272500,2026-09
+FP&A,Salaries & Benefits,2026-11,273500,2026-09
+FP&A,Salaries & Benefits,2026-12,266500,2026-09
+FP&A,Contractors,2026-04,25400,2026-03
+FP&A,Contractors,2026-05,24900,2026-03
+FP&A,Contractors,2026-06,24900,2026-03
+FP&A,Contractors,2026-07,25200,2026-03
+FP&A,Contractors,2026-08,24700,2026-03
+FP&A,Contractors,2026-09,25300,2026-03
+FP&A,Contractors,2026-10,25500,2026-03
+FP&A,Contractors,2026-11,24500,2026-03
+FP&A,Contractors,2026-12,24600,2026-03
+FP&A,Contractors,2026-07,25200,2026-06
+FP&A,Contractors,2026-08,24600,2026-06
+FP&A,Contractors,2026-09,24900,2026-06
+FP&A,Contractors,2026-10,25100,2026-06
+FP&A,Contractors,2026-11,24700,2026-06
+FP&A,Contractors,2026-12,25100,2026-06
+FP&A,Contractors,2026-10,25800,2026-09
+FP&A,Contractors,2026-11,25200,2026-09
+FP&A,Contractors,2026-12,25300,2026-09
+FP&A,Software & Data,2026-04,29000,2026-03
+FP&A,Software & Data,2026-05,29200,2026-03
+FP&A,Software & Data,2026-06,29100,2026-03
+FP&A,Software & Data,2026-07,29000,2026-03
+FP&A,Software & Data,2026-08,29700,2026-03
+FP&A,Software & Data,2026-09,29600,2026-03
+FP&A,Software & Data,2026-10,29400,2026-03
+FP&A,Software & Data,2026-11,28600,2026-03
+FP&A,Software & Data,2026-12,28700,2026-03
+FP&A,Software & Data,2026-07,33700,2026-06
+FP&A,Software & Data,2026-08,33900,2026-06
+FP&A,Software & Data,2026-09,33100,2026-06
+FP&A,Software & Data,2026-10,33500,2026-06
+FP&A,Software & Data,2026-11,33800,2026-06
+FP&A,Software & Data,2026-12,34200,2026-06
+FP&A,Software & Data,2026-10,34400,2026-09
+FP&A,Software & Data,2026-11,34000,2026-09
+FP&A,Software & Data,2026-12,33900,2026-09
+FP&A,Travel & Training,2026-04,12100,2026-03
+FP&A,Travel & Training,2026-05,12700,2026-03
+FP&A,Travel & Training,2026-06,9800,2026-03
+FP&A,Travel & Training,2026-07,6000,2026-03
+FP&A,Travel & Training,2026-08,6900,2026-03
+FP&A,Travel & Training,2026-09,13800,2026-03
+FP&A,Travel & Training,2026-10,15000,2026-03
+FP&A,Travel & Training,2026-11,11800,2026-03
+FP&A,Travel & Training,2026-12,8000,2026-03
+FP&A,Travel & Training,2026-07,6000,2026-06
+FP&A,Travel & Training,2026-08,7100,2026-06
+FP&A,Travel & Training,2026-09,14200,2026-06
+FP&A,Travel & Training,2026-10,15600,2026-06
+FP&A,Travel & Training,2026-11,12000,2026-06
+FP&A,Travel & Training,2026-12,8100,2026-06
+FP&A,Travel & Training,2026-10,15400,2026-09
+FP&A,Travel & Training,2026-11,12300,2026-09
+FP&A,Travel & Training,2026-12,8200,2026-09
+FP&A,Professional Services,2026-04,25600,2026-03
+FP&A,Professional Services,2026-05,25200,2026-03
+FP&A,Professional Services,2026-06,29000,2026-03
+FP&A,Professional Services,2026-07,25700,2026-03
+FP&A,Professional Services,2026-08,25700,2026-03
+FP&A,Professional Services,2026-09,34800,2026-03
+FP&A,Professional Services,2026-10,41100,2026-03
+FP&A,Professional Services,2026-11,44900,2026-03
+FP&A,Professional Services,2026-12,41200,2026-03
+FP&A,Professional Services,2026-07,25100,2026-06
+FP&A,Professional Services,2026-08,25600,2026-06
+FP&A,Professional Services,2026-09,35300,2026-06
+FP&A,Professional Services,2026-10,40900,2026-06
+FP&A,Professional Services,2026-11,44100,2026-06
+FP&A,Professional Services,2026-12,41300,2026-06
+FP&A,Professional Services,2026-10,39700,2026-09
+FP&A,Professional Services,2026-11,43000,2026-09
+FP&A,Professional Services,2026-12,39900,2026-09
+FP&A,Facilities & Other,2026-04,36200,2026-03
+FP&A,Facilities & Other,2026-05,36100,2026-03
+FP&A,Facilities & Other,2026-06,36300,2026-03
+FP&A,Facilities & Other,2026-07,35200,2026-03
+FP&A,Facilities & Other,2026-08,35700,2026-03
+FP&A,Facilities & Other,2026-09,36100,2026-03
+FP&A,Facilities & Other,2026-10,35500,2026-03
+FP&A,Facilities & Other,2026-11,35600,2026-03
+FP&A,Facilities & Other,2026-12,36100,2026-03
+FP&A,Facilities & Other,2026-07,35300,2026-06
+FP&A,Facilities & Other,2026-08,36200,2026-06
+FP&A,Facilities & Other,2026-09,35600,2026-06
+FP&A,Facilities & Other,2026-10,35100,2026-06
+FP&A,Facilities & Other,2026-11,35800,2026-06
+FP&A,Facilities & Other,2026-12,35600,2026-06
+FP&A,Facilities & Other,2026-10,36200,2026-09
+FP&A,Facilities & Other,2026-11,36200,2026-09
+FP&A,Facilities & Other,2026-12,35100,2026-09
+Technology,Salaries & Benefits,2026-04,668500,2026-03
+Technology,Salaries & Benefits,2026-05,678000,2026-03
+Technology,Salaries & Benefits,2026-06,675100,2026-03
+Technology,Salaries & Benefits,2026-07,677100,2026-03
+Technology,Salaries & Benefits,2026-08,664700,2026-03
+Technology,Salaries & Benefits,2026-09,671700,2026-03
+Technology,Salaries & Benefits,2026-10,662200,2026-03
+Technology,Salaries & Benefits,2026-11,665600,2026-03
+Technology,Salaries & Benefits,2026-12,668200,2026-03
+Technology,Salaries & Benefits,2026-07,654200,2026-06
+Technology,Salaries & Benefits,2026-08,666900,2026-06
+Technology,Salaries & Benefits,2026-09,669500,2026-06
+Technology,Salaries & Benefits,2026-10,659100,2026-06
+Technology,Salaries & Benefits,2026-11,654600,2026-06
+Technology,Salaries & Benefits,2026-12,653900,2026-06
+Technology,Salaries & Benefits,2026-10,660900,2026-09
+Technology,Salaries & Benefits,2026-11,666000,2026-09
+Technology,Salaries & Benefits,2026-12,665300,2026-09
+Technology,Contractors,2026-04,258300,2026-03
+Technology,Contractors,2026-05,259200,2026-03
+Technology,Contractors,2026-06,254500,2026-03
+Technology,Contractors,2026-07,258900,2026-03
+Technology,Contractors,2026-08,250800,2026-03
+Technology,Contractors,2026-09,257400,2026-03
+Technology,Contractors,2026-10,252000,2026-03
+Technology,Contractors,2026-11,251700,2026-03
+Technology,Contractors,2026-12,252200,2026-03
+Technology,Contractors,2026-07,293700,2026-06
+Technology,Contractors,2026-08,302700,2026-06
+Technology,Contractors,2026-09,295100,2026-06
+Technology,Contractors,2026-10,296600,2026-06
+Technology,Contractors,2026-11,304500,2026-06
+Technology,Contractors,2026-12,303500,2026-06
+Technology,Contractors,2026-10,297200,2026-09
+Technology,Contractors,2026-11,296800,2026-09
+Technology,Contractors,2026-12,298500,2026-09
+Technology,Software & Data,2026-04,240500,2026-03
+Technology,Software & Data,2026-05,243500,2026-03
+Technology,Software & Data,2026-06,243200,2026-03
+Technology,Software & Data,2026-07,243800,2026-03
+Technology,Software & Data,2026-08,244500,2026-03
+Technology,Software & Data,2026-09,246800,2026-03
+Technology,Software & Data,2026-10,243700,2026-03
+Technology,Software & Data,2026-11,242500,2026-03
+Technology,Software & Data,2026-12,242500,2026-03
+Technology,Software & Data,2026-07,238900,2026-06
+Technology,Software & Data,2026-08,245900,2026-06
+Technology,Software & Data,2026-09,244900,2026-06
+Technology,Software & Data,2026-10,245400,2026-06
+Technology,Software & Data,2026-11,240100,2026-06
+Technology,Software & Data,2026-12,245200,2026-06
+Technology,Software & Data,2026-10,241000,2026-09
+Technology,Software & Data,2026-11,242100,2026-09
+Technology,Software & Data,2026-12,240600,2026-09
+Technology,Travel & Training,2026-04,16100,2026-03
+Technology,Travel & Training,2026-05,17600,2026-03
+Technology,Travel & Training,2026-06,13300,2026-03
+Technology,Travel & Training,2026-07,8000,2026-03
+Technology,Travel & Training,2026-08,9200,2026-03
+Technology,Travel & Training,2026-09,19000,2026-03
+Technology,Travel & Training,2026-10,20300,2026-03
+Technology,Travel & Training,2026-11,16000,2026-03
+Technology,Travel & Training,2026-12,10900,2026-03
+Technology,Travel & Training,2026-07,7800,2026-06
+Technology,Travel & Training,2026-08,9100,2026-06
+Technology,Travel & Training,2026-09,18900,2026-06
+Technology,Travel & Training,2026-10,20100,2026-06
+Technology,Travel & Training,2026-11,15700,2026-06
+Technology,Travel & Training,2026-12,10600,2026-06
+Technology,Travel & Training,2026-10,19600,2026-09
+Technology,Travel & Training,2026-11,15700,2026-09
+Technology,Travel & Training,2026-12,10600,2026-09
+Technology,Professional Services,2026-04,20100,2026-03
+Technology,Professional Services,2026-05,20300,2026-03
+Technology,Professional Services,2026-06,22400,2026-03
+Technology,Professional Services,2026-07,20300,2026-03
+Technology,Professional Services,2026-08,19700,2026-03
+Technology,Professional Services,2026-09,28000,2026-03
+Technology,Professional Services,2026-10,32500,2026-03
+Technology,Professional Services,2026-11,35600,2026-03
+Technology,Professional Services,2026-12,32500,2026-03
+Technology,Professional Services,2026-07,19700,2026-06
+Technology,Professional Services,2026-08,19700,2026-06
+Technology,Professional Services,2026-09,27900,2026-06
+Technology,Professional Services,2026-10,32400,2026-06
+Technology,Professional Services,2026-11,34700,2026-06
+Technology,Professional Services,2026-12,32900,2026-06
+Technology,Professional Services,2026-10,33000,2026-09
+Technology,Professional Services,2026-11,34400,2026-09
+Technology,Professional Services,2026-12,32300,2026-09
+Technology,Facilities & Other,2026-04,42700,2026-03
+Technology,Facilities & Other,2026-05,42300,2026-03
+Technology,Facilities & Other,2026-06,42400,2026-03
+Technology,Facilities & Other,2026-07,42500,2026-03
+Technology,Facilities & Other,2026-08,42900,2026-03
+Technology,Facilities & Other,2026-09,42500,2026-03
+Technology,Facilities & Other,2026-10,42300,2026-03
+Technology,Facilities & Other,2026-11,42800,2026-03
+Technology,Facilities & Other,2026-12,41700,2026-03
+Technology,Facilities & Other,2026-07,41300,2026-06
+Technology,Facilities & Other,2026-08,41400,2026-06
+Technology,Facilities & Other,2026-09,42400,2026-06
+Technology,Facilities & Other,2026-10,42900,2026-06
+Technology,Facilities & Other,2026-11,42900,2026-06
+Technology,Facilities & Other,2026-12,42500,2026-06
+Technology,Facilities & Other,2026-10,41500,2026-09
+Technology,Facilities & Other,2026-11,42000,2026-09
+Technology,Facilities & Other,2026-12,41200,2026-09

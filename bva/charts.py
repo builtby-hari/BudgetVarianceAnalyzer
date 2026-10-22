@@ -14,8 +14,9 @@ import textwrap
 from html import escape
 
 from .commentary import MONTH_ABBR, money
-from .data import load_dataset, load_wide
-from .variance import analyze, bridge_steps, top_drivers
+from .data import load_dataset, load_forecast, load_wide
+from .forecast import forecast_analysis
+from .variance import EXPENSE, METHOD_LABEL, analyze, bridge_steps, top_drivers
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 W, H = 820, 470
@@ -59,6 +60,8 @@ def _open(w, h, pal, title, subtitle):
 
 
 def _frame(title, subtitle, ylabel, lo, hi, yfmt, pal, h=H, b=B, right=W - R):
+    if hi <= lo:                      # all-zero (or flat) data: give the axis some height
+        hi = lo + 1.0
     p = _open(W, h, pal, title, subtitle)
     ys = lambda v: h - b - (v - lo) / (hi - lo) * (h - b - T)
     for v in _ticks(lo, hi):
@@ -114,24 +117,18 @@ def _period(analysis):
     return f"through {analysis.through} ({analysis.months_elapsed} months)"
 
 
-def waterfall_svg(analysis, n_drivers=6, dark=False):
-    """YTD budget -> top drivers -> other -> YTD actual, expense lines only. The y-axis is truncated to show the steps.
-    Not embedded in the README any more; the HTML report uses it."""
-    pal = _pal(dark)
-    lines = top_drivers(analysis.expense_lines, n_drivers)
-    other = analysis.total.var - sum(r.var for r in lines)
-    steps = [(f"{r.cost_center}: {r.category}", r.var) for r in lines]
-    steps.append(("All Other Lines", other))
-    b, level, levels = analysis.total.ytd_budget, analysis.total.ytd_budget, []
+def _waterfall(pal, title, ylabel, start, steps, end, start_label, end_label):
+    """Truncated-axis waterfall: start bar, one floating bar per (label, delta) step, end bar. Over (positive
+    delta) is warm, under is teal. Flat data is divide-by-zero safe (_frame widens a flat axis)."""
+    b, level, levels = start, start, []
     for _, v in steps:
         levels.append((level, level + v))
         level += v
-    allv = [b, analysis.total.ytd_actual] + [x for pair in levels for x in pair]
+    allv = [b, end] + [x for pair in levels for x in pair]
     span = max(allv) - min(allv)
     lo, hi = min(allv) - span * 0.35, max(allv) + span * 0.12
     WH, WB = 540, 175
-    p, ys = _frame(f"YTD Budget to Actual by Driver (Through {analysis.through})",
-                   f"{SYNTHETIC}. Axis truncated, not from zero.", "YTD Spend", lo, hi, _fmt_m, pal, WH, WB)
+    p, ys = _frame(title, f"{SYNTHETIC}. Axis truncated, not from zero.", ylabel, lo, hi, _fmt_m, pal, WH, WB)
     cols = len(steps) + 2
     slot = (W - L - R) / cols
     bw = slot * 0.62
@@ -143,19 +140,65 @@ def waterfall_svg(analysis, n_drivers=6, dark=False):
         _value_label(p, pal, x + bw / 2, y1 - 5, value_text)
         _rotated_label(p, pal, x + bw / 2, WH - WB + 14, label)
 
-    bar(0, b, lo, pal["muted"], "YTD Budget", _fmt_m(b))
+    bar(0, b, lo, pal["muted"], start_label, _fmt_m(b))
     for i, ((label, v), (a, z)) in enumerate(zip(steps, levels), start=1):
         bar(i, a, z, pal["warm"] if v > 0 else pal["teal"], label, f"{'+' if v >= 0 else '-'}{money(v)}")
         px = L + slot * (i - 1) + (slot + bw) / 2
         p.append(f'<line x1="{px:.1f}" x2="{L+slot*i+(slot-bw)/2:.1f}" y1="{ys(a):.1f}" y2="{ys(a):.1f}" stroke="{pal["text"]}" stroke-dasharray="3 3" stroke-width="0.8"/>')
-    bar(cols - 1, analysis.total.ytd_actual, lo, pal["navy"], "YTD Actual", _fmt_m(analysis.total.ytd_actual))
+    bar(cols - 1, end, lo, pal["navy"], end_label, _fmt_m(end))
     _legend(p, pal, WH - 12, [(pal["warm"], "Over Budget (Unfavorable)", False), (pal["teal"], "Under Budget (Favorable)", False)])
     p.append('</svg>')
     return "\n".join(p)
 
 
+def waterfall_svg(analysis, n_drivers=6, dark=False):
+    """YTD budget -> top drivers -> other -> YTD actual, expense lines only. The y-axis is truncated to show the steps.
+    Not embedded in the README any more; the HTML report uses it."""
+    lines = top_drivers(analysis.expense_lines, n_drivers)
+    steps = [(f"{r.cost_center}: {r.category}", r.var) for r in lines]
+    steps.append(("All Other Lines", analysis.total.var - sum(r.var for r in lines)))
+    return _waterfall(_pal(dark), f"YTD Budget to Actual by Driver (Through {analysis.through})", "YTD Spend",
+                      analysis.total.ytd_budget, steps, analysis.total.ytd_actual, "YTD Budget", "YTD Actual")
+
+
+def outlook_svg(analysis, fa, n_drivers=6, dark=False):
+    """Full-year expense budget -> top outlook drivers -> other -> full-year outlook (YTD actual + open-month forecast)."""
+    lines = sorted((r for r in fa.rows if r.kind == EXPENSE), key=lambda r: (-abs(r.outlook_var), r.cost_center, r.category))[:n_drivers]
+    tot = next((r for r in fa.totals if r.kind == EXPENSE), None)
+    budget, outlook, var = (tot.fy_budget, tot.outlook, tot.outlook_var) if tot else (0.0, 0.0, 0.0)   # revenue-only: empty bridge
+    steps = [(f"{r.cost_center}: {r.category}", r.outlook_var) for r in lines]
+    steps.append(("All Other Lines", var - sum(r.outlook_var for r in lines)))
+    return _waterfall(_pal(dark), f"Full-Year Expense Outlook vs Budget by Driver (Through {analysis.through})", "Full-Year Spend",
+                      budget, steps, outlook, "FY Budget", "FY Outlook")
+
+
+def forecast_accuracy_svg(fa, dark=False, n=10):
+    """MAPE by line (worst n), horizontal bars. The subtitle carries the pooled weighted MAPE. No accuracy data draws a note."""
+    pal = _pal(dark)
+    rows = sorted((a for a in fa.accuracy if a.mape is not None), key=lambda a: (-a.mape, a.cost_center, a.category))[:n]
+    m = max((a.mape for a in rows), default=0) or 1.0   # all-zero errors or no rows: avoid dividing by zero
+    pooled = [f"{t.kind} {t.wmape*100:.1f}%" for t in fa.accuracy_totals if t.wmape is not None]
+    ROW, TOP_Y = 30, 80
+    h = TOP_Y + max(len(rows), 1) * ROW + 50
+    p = _open(W, h, pal, "Forecast Accuracy: MAPE by Line",
+              f"{SYNTHETIC}. Prior forecast vs actual, closed months." + (f" Pooled MAPE weighted by actual: {', '.join(pooled)}." if pooled else ""))
+    x0, full = 330, 290
+    p.append(f'<line x1="{x0}" x2="{x0}" y1="{TOP_Y-8}" y2="{TOP_Y + max(len(rows), 1)*ROW - 6}" stroke="{pal["text"]}"/>')
+    if not rows:
+        p.append(f'<text x="{x0+12}" y="{TOP_Y+14}" font-size="12" fill="{pal["text"]}" {FONT}>No closed month had a prior forecast version.</text>')
+    for i, a in enumerate(rows):
+        y = TOP_Y + i * ROW
+        length = a.mape / m * full
+        bias = "over-forecast" if a.bias > 0 else ("under-forecast" if a.bias < 0 else "no bias")
+        p.append(f'<rect x="{x0}" y="{y}" width="{max(length, 1.5):.1f}" height="16" fill="{pal["navy"]}"/>')
+        p.append(f'<text x="{x0-8}" y="{y+12}" text-anchor="end" font-size="12" fill="{pal["text"]}" {FONT}>{escape(f"{a.cost_center} / {a.category}")}</text>')
+        p.append(f'<text x="{x0+length+6:.1f}" y="{y+12}" font-size="11" fill="{pal["text"]}" {FONT}>{a.mape*100:.1f}% ({bias})</text>')
+    p.append('</svg>')
+    return "\n".join(p)
+
+
 def monthly_svg(analysis, dark=False):
-    """Total monthly budget vs actual, with the run-rate projection dashed for open months. Used by the HTML report."""
+    """Total monthly budget vs actual, with the projection dashed for open months. Used by the HTML report."""
     pal = _pal(dark)
     m = analysis.monthly
     vals = [r["budget"] for r in m] + [r["actual"] for r in m if r["actual"] is not None] + \
@@ -184,7 +227,7 @@ def monthly_svg(analysis, dark=False):
         d = " ".join(("M" if j == 0 else "L") + f"{x:.1f} {y:.1f}" for j, (x, y) in enumerate(pts))
         p.append(f'<path d="{d}" fill="none" stroke="{pal["navy"]}" stroke-width="2.2" stroke-dasharray="6 4"/>')
     _legend(p, pal, H - 14, [(pal["muted"], "Budget", False), (pal["navy"], "Actual", False),
-                             (pal["navy"], "Run-Rate Projection", True)])
+                             (pal["navy"], f"{METHOD_LABEL[analysis.method]} Projection", True)])
     p.append('</svg>')
     return "\n".join(p)
 
@@ -294,7 +337,7 @@ def heatmap_svg(analysis, dark=False):
     rows = [(r.cost_center, [pct(m) for m in analysis.cc_monthly[r.cost_center][:n]]) for r in analysis.cost_centers]
     rows.append(("Total", [pct(m) for m in analysis.monthly[:n]]))
     vals = [v for _, cells in rows for v in cells if v is not None]
-    lim = math.ceil(max(abs(v) for v in vals) * 20) / 20
+    lim = math.ceil(max((abs(v) for v in vals), default=0) * 20) / 20 or 0.05   # all-zero budget: no % to scale
     LABEL_W, TOP, CELL_H, GAP = 150, 84, 46, 8
     cell_w = (W - LABEL_W - R - 10) / n
     legend_y = TOP + len(rows) * CELL_H + GAP + 56
@@ -365,7 +408,7 @@ def cumulative_svg(analysis, dark=False):
     p.append(f'<text x="{ex:.1f}" y="{ya:.1f}" font-size="12" font-weight="bold" fill="{pal["navy"]}" {FONT}>Actual {_fmt_m(ea)}</text>')
     p.append(f'<text x="{ex:.1f}" y="{yb:.1f}" font-size="12" fill="{pal["muted"]}" {FONT}>Budget {_fmt_m(eb)}</text>')
     p.append(f'<text x="{ex:.1f}" y="{yb+18:.1f}" font-size="11" fill="{pal["warm"] if gap > 0 else pal["teal"]}" {FONT}>'
-             f'{"+" if gap >= 0 else "-"}{money(gap)} ({abs(gap)/eb*100:.1f}%) vs Budget</text>')
+             f'{"+" if gap >= 0 else "-"}{money(gap)}{f" ({abs(gap)/eb*100:.1f}%)" if eb else ""} vs Budget</text>')
     _legend(p, pal, H - 14, [(pal["muted"], "Budget", False), (pal["navy"], "Actual", False)])
     p.append('</svg>')
     return "\n".join(p)
@@ -376,7 +419,7 @@ def flagged_svg(analysis, dark=False, n=10):
     Lines that breach materiality are solid and marked *; the others are faded."""
     pal = _pal(dark)
     rows = top_drivers(analysis.lines, n)
-    m = max(abs(r.var) for r in rows)
+    m = max(abs(r.var) for r in rows) or 1.0   # all-zero variances: avoid dividing by zero
     ROW, TOP_Y = 34, 96
     h = TOP_Y + len(rows) * ROW + 70
     p = _open(W, h, pal, "Flagged Line Items: Largest Variances, Favorable and Unfavorable",
@@ -482,16 +525,26 @@ def sample_analyses(root=ROOT):
     return expense, wide
 
 
+def sample_forecast(expense, root=ROOT):
+    """Forecast analysis of the narrow expense sample with data/forecast.csv."""
+    data = os.path.join(root, "data")
+    b, a, kinds = load_dataset(os.path.join(data, "budget.csv"), os.path.join(data, "actuals.csv"))
+    return forecast_analysis(expense, b, a, load_forecast(os.path.join(data, "forecast.csv"), kinds))
+
+
 def build_docs(outdir, root=ROOT):
     """Write every README visual, light and dark. Returns the file names written."""
     os.makedirs(outdir, exist_ok=True)
     expense, wide = sample_analyses(root)
+    fa = sample_forecast(expense, root)
     jobs = {
         "bridge": lambda d: bridge_svg(wide, d),
         "line-items": lambda d: line_items_svg(expense, d),
         "heatmap": lambda d: heatmap_svg(expense, d),
         "cumulative": lambda d: cumulative_svg(expense, d),
         "flagged": lambda d: flagged_svg(expense, d),
+        "forecast-outlook": lambda d: outlook_svg(expense, fa, dark=d),
+        "forecast-accuracy": lambda d: forecast_accuracy_svg(fa, d),
         "sample-output": lambda d: sample_output_svg(d),
         "banner": lambda d: banner_svg(d),
     }

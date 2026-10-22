@@ -7,11 +7,15 @@ The operating-income total is revenue minus expense. Its favorable variance is t
 in operating income, so positive is always favorable there.
 """
 
+import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
 MONTHS = 12
 EXPENSE, REVENUE = "expense", "revenue"
+RUN_RATE, BUDGET_REMAINING = "run-rate", "budget-remaining"
+METHOD_LABEL = {RUN_RATE: "Run-Rate", BUDGET_REMAINING: "Budget-Remaining"}   # Title Case, for headers and legends
+_THROUGH = re.compile(r"\d{4}-(0[1-9]|1[0-2])")
 
 
 @dataclass(frozen=True)
@@ -44,11 +48,19 @@ def is_material(var, pct, th):
 
 def run_rate_projection(actual_months, months_remaining, n=3):
     """YTD actual plus the average of the last n closed months for each remaining month.
-    n <= 0 (or larger than the months available) averages all closed months."""
+    n <= 0 (or larger than the months available) averages all closed months.
+    A month that is None (no actuals loaded) counts as $0 in YTD but is left out of the average,
+    so a gap does not drag the projection down."""
     if not actual_months:
         return 0.0
-    window = actual_months[-n:] if n > 0 else actual_months
-    return sum(actual_months) + (sum(window) / len(window)) * months_remaining
+    window = [a for a in (actual_months[-n:] if n > 0 else actual_months) if a is not None]
+    ytd = sum(a for a in actual_months if a is not None)
+    return ytd + (sum(window) / len(window) if window else 0.0) * months_remaining
+
+
+def budget_remaining_projection(actual_months, bud_months):
+    """YTD actual plus the budget for the months not yet closed (assumes the rest of the year lands on plan)."""
+    return sum(a or 0.0 for a in actual_months) + sum(bud_months[len(actual_months):])
 
 
 @dataclass
@@ -124,8 +136,10 @@ class Analysis:
     total: Row                     # expense lines only
     monthly: List[dict]            # month, budget, actual (None if open), projection (None if closed)
     warnings: List[str] = field(default_factory=list)
+    method: str = RUN_RATE
     operating_income: Optional[OperatingIncome] = None
     cc_monthly: Dict[str, List[dict]] = field(default_factory=dict)  # expense cost center -> month, budget, actual
+    forecast: Optional[object] = None   # a forecast.ForecastAnalysis when a forecast file was given
 
     @property
     def expense_lines(self):
@@ -137,14 +151,15 @@ class Analysis:
         return any(r.kind == REVENUE for r in self.lines)
 
 
-def make_row(cc, cat, bud_m, act_m, th, rr_months, kind=EXPENSE):
-    """Build a Row from 12 monthly budgets and the closed months' actuals."""
+def make_row(cc, cat, bud_m, act_m, th, rr_months, kind=EXPENSE, method=RUN_RATE):
+    """Build a Row from 12 monthly budgets and the closed months' actuals (None marks a month with no actuals)."""
     n = len(act_m)
-    ytd_b, ytd_a = sum(bud_m[:n]), sum(act_m)
+    ytd_b, ytd_a = sum(bud_m[:n]), sum(a or 0.0 for a in act_m)
     var = variance(ytd_a, ytd_b)
     pct = variance_pct(ytd_a, ytd_b)
     fy_b = sum(bud_m)
-    proj = run_rate_projection(act_m, MONTHS - n, rr_months)
+    proj = (budget_remaining_projection(act_m, bud_m) if method == BUDGET_REMAINING
+            else run_rate_projection(act_m, MONTHS - n, rr_months))
     pvar = variance(proj, fy_b)
     return Row(cc, cat, ytd_b, ytd_a, var, pct, status(var, kind=kind), is_material(var, pct, th),
                fy_b, proj, pvar, variance_pct(proj, fy_b), status(pvar, kind=kind), kind)
@@ -152,10 +167,17 @@ def make_row(cc, cat, bud_m, act_m, th, rr_months, kind=EXPENSE):
 
 def analyze(budget: Dict[Tuple[str, str, str], float], actuals: Dict[Tuple[str, str, str], float],
             through: Optional[str] = None, thresholds: Thresholds = Thresholds(),
-            run_rate_months: int = 3, kinds: Optional[Dict[Tuple[str, str], str]] = None) -> Analysis:
-    """kinds maps (cost_center, category) to 'expense' or 'revenue'. Lines not in kinds are expense."""
+            run_rate_months: int = 3, kinds: Optional[Dict[Tuple[str, str], str]] = None,
+            method: str = RUN_RATE, allow_missing: bool = False) -> Analysis:
+    """kinds maps (cost_center, category) to 'expense' or 'revenue'. Lines not in kinds are expense.
+    A closed month with no actuals for a line raises ValueError (fail closed). With allow_missing=True
+    it counts as $0 in YTD, is left out of the run-rate average, and is listed in the warnings."""
     if not actuals:
         raise ValueError("no actuals loaded")
+    if method not in (RUN_RATE, BUDGET_REMAINING):
+        raise ValueError(f"method must be {RUN_RATE!r} or {BUDGET_REMAINING!r}, got {method!r}")
+    if through is not None and not _THROUGH.fullmatch(through):
+        raise ValueError(f"through must be YYYY-MM, got {through!r}")
     kinds = kinds or {}
     kind_of = lambda c, k: kinds.get((c, k), EXPENSE)
     if through is None:
@@ -165,23 +187,30 @@ def analyze(budget: Dict[Tuple[str, str, str], float], actuals: Dict[Tuple[str, 
     closed = fy[:n]
 
     keys = sorted({(c, k) for (c, k, m) in budget if m in fy} | {(c, k) for (c, k, m) in actuals if m in closed})
-    warnings, series = [], {}
+    if not keys:
+        raise ValueError(f"no budget or actuals in FY{year} (check --through)")
+    warnings, series, gap_msgs = [], {}, []
     for c, k in keys:
         bud = [budget.get((c, k, m), 0.0) for m in fy]
-        act = [actuals.get((c, k, m), 0.0) for m in closed]
-        gaps = sum(1 for m in closed if (c, k, m) not in actuals)
+        act = [actuals.get((c, k, m)) for m in closed]
+        gaps = [m for m, a in zip(closed, act) if a is None]
         if gaps:
-            warnings.append(f"{c} / {k}: {gaps} closed month(s) have no actuals (treated as $0)")
+            gap_msgs.append(f"{c} / {k}: no actuals for {', '.join(gaps)}")
         if not any((c, k, m) in budget for m in fy):
             warnings.append(f"{c} / {k}: no budget in FY{year} (treated as $0)")
         series[(c, k)] = (bud, act)
+    if gap_msgs and not allow_missing:
+        raise ValueError("closed month(s) with no actuals (fix the data, or allow_missing=True to count them as $0): "
+                         + "; ".join(gap_msgs))
+    warnings = [m + " (counted as $0 in YTD, left out of the run-rate average)" for m in gap_msgs] + warnings
 
-    lines = [make_row(c, k, b, a, thresholds, run_rate_months, kind_of(c, k)) for (c, k), (b, a) in series.items()]
+    lines = [make_row(c, k, b, a, thresholds, run_rate_months, kind_of(c, k), method) for (c, k), (b, a) in series.items()]
     expense = {key: v for key, v in series.items() if kind_of(*key) == EXPENSE}
 
     def rollup(name, members):
         bud = [sum(s[0][i] for s in members) for i in range(MONTHS)]
-        act = [sum(s[1][i] for s in members) for i in range(n)]
+        act = [None if all(s[1][i] is None for s in members) else sum(s[1][i] or 0.0 for s in members)
+               for i in range(n)]
         return bud, act
 
     # cost-center and total rows summarize expense only; revenue shows in the lines and the operating-income total
@@ -189,16 +218,17 @@ def analyze(budget: Dict[Tuple[str, str, str], float], actuals: Dict[Tuple[str, 
     cc_rows, cc_monthly = [], {}
     for c in ccs:
         bud, act = rollup(c, [v for (cc, _), v in expense.items() if cc == c])
-        cc_rows.append(make_row(c, None, bud, act, thresholds, run_rate_months))
-        cc_monthly[c] = [{"month": m, "budget": bud[i], "actual": act[i] if i < n else None} for i, m in enumerate(fy)]
+        cc_rows.append(make_row(c, None, bud, act, thresholds, run_rate_months, method=method))
+        cc_monthly[c] = [{"month": m, "budget": bud[i], "actual": (act[i] or 0.0) if i < n else None} for i, m in enumerate(fy)]
     t_bud, t_act = rollup("Total", list(expense.values()))
-    total = make_row("Total", None, t_bud, t_act, thresholds, run_rate_months)
+    total = make_row("Total", None, t_bud, t_act, thresholds, run_rate_months, method=method)
 
-    window = t_act[-run_rate_months:] if run_rate_months > 0 else t_act
+    window = [a for a in (t_act[-run_rate_months:] if run_rate_months > 0 else t_act) if a is not None]
     rr = sum(window) / len(window) if window else 0.0
-    monthly = [{"month": m, "budget": t_bud[i], "actual": t_act[i] if i < n else None,
-                "projection": None if i < n else rr} for i, m in enumerate(fy)]
-    return Analysis(through, year, n, thresholds, run_rate_months, lines, cc_rows, total, monthly, warnings,
+    monthly = [{"month": m, "budget": t_bud[i], "actual": (t_act[i] or 0.0) if i < n else None,
+                "projection": None if i < n else (t_bud[i] if method == BUDGET_REMAINING else rr)}
+               for i, m in enumerate(fy)]
+    return Analysis(through, year, n, thresholds, run_rate_months, lines, cc_rows, total, monthly, warnings, method,
                     operating_income=summarize_operating_income(lines), cc_monthly=cc_monthly)
 
 

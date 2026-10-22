@@ -131,13 +131,13 @@ class TestAnalysis(unittest.TestCase):
     def test_missing_actuals_warn(self):
         a = dict(self.a)
         del a[("Ops", "Rent", "2026-04")]
-        an = analyze(self.b, a, through="2026-06")
+        an = analyze(self.b, a, through="2026-06", allow_missing=True)
         self.assertTrue(any("Rent" in w for w in an.warnings))
 
     def test_line_only_in_actuals(self):
         a = dict(self.a)
         a[("Ops", "Legal", "2026-01")] = 500
-        an = analyze(self.b, a, through="2026-06", thresholds=Thresholds(25, 0.10))
+        an = analyze(self.b, a, through="2026-06", thresholds=Thresholds(25, 0.10), allow_missing=True)
         legal = next(r for r in an.lines if r.category == "Legal")
         self.assertEqual((legal.ytd_budget, legal.ytd_actual, legal.var_pct), (0, 500, None))
         self.assertTrue(legal.material)
@@ -454,6 +454,175 @@ class TestWideFormat(unittest.TestCase):
             load_wide(path)
 
 
+class TestInputHardeningAndCliGate(unittest.TestCase):
+    tmp = TestIOAndReport.tmp
+
+    def test_accounting_negative_and_non_finite_amounts(self):
+        p = self.tmp("cost_center,category,month,amount\nA,x,2026-01,\"($1,000.50)\"\n")
+        self.assertEqual(load_amounts(p), {("A", "x", "2026-01"): -1000.5})
+        for bad in ("nan", "inf", "-inf", "(abc)"):
+            with self.assertRaises(ValueError, msg=bad):
+                load_amounts(self.tmp(f"cost_center,category,month,amount\nA,x,2026-01,{bad}\n"))
+
+    def run_cli(self, *args):
+        import contextlib, io
+        import cli
+        with contextlib.redirect_stdout(io.StringIO()) as buf:
+            return cli.main(["--no-commentary", *args]), buf.getvalue()
+
+    def test_fail_on_material_exit_code(self):
+        self.assertEqual(self.run_cli()[0], 0)
+        code, out = self.run_cli("--fail-on-material")
+        self.assertEqual(code, 1)
+        self.assertIn("--fail-on-material", out)
+        self.assertEqual(self.run_cli("--fail-on-material", "--amount-threshold", "1e12")[0], 0)
+
+    def test_bad_through_is_a_clean_cli_error(self):
+        import contextlib, io
+        import cli
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as cm:
+            cli.main(["--through", "2026-13"])
+        self.assertEqual(cm.exception.code, 2)
+
+
+class TestPvmProjectionJson(unittest.TestCase):
+    tmp = TestIOAndReport.tmp
+    PVM_ROWS = [(5000, 30, 4800, 35), (4000, 70, 4550, 75), (9000, 10, 6900, 10)]
+
+    def run_cli(self, *args):
+        import contextlib, io
+        import cli
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main(list(args))
+        return code, out.getvalue(), err.getvalue()
+
+    def test_price_volume_mix_example(self):
+        from bva.pvm import price_volume_mix
+        r = price_volume_mix(self.PVM_ROWS)
+        self.assertAlmostEqual(r.budget_revenue, 520000)
+        self.assertAlmostEqual(r.actual_revenue, 578250)
+        self.assertAlmostEqual(r.price, 46750)
+        self.assertAlmostEqual(r.volume + r.mix, 11500)
+        self.assertAlmostEqual(r.price + r.volume + r.mix, r.total)
+        self.assertAlmostEqual(r.volume, (16250 - 18000) * 520000 / 18000, places=6)
+
+    def test_price_volume_mix_zero_budget_qty_raises(self):
+        from bva.pvm import price_volume_mix
+        with self.assertRaises(ValueError):
+            price_volume_mix([(0, 10, 5, 10)])
+
+    def test_load_pvm_rejects_missing_column_and_negative_qty(self):
+        from bva.pvm import load_pvm
+        p = self.tmp("product,budget_qty,budget_price,actual_qty\nA,1,2,3\n")
+        with self.assertRaisesRegex(ValueError, "missing column"):
+            load_pvm(p)
+        p = self.tmp("product,budget_qty,budget_price,actual_qty,actual_price\nA,-1,30,5,35\n")
+        with self.assertRaisesRegex(ValueError, "negative"):
+            load_pvm(p)
+
+    def test_budget_remaining_projection_and_method(self):
+        from bva.variance import budget_remaining_projection
+        self.assertAlmostEqual(budget_remaining_projection([10, 10], [5] * 12), 20 + 50)
+        b, a = build([("A", "x", [100] * 12)], [("A", "x", [120, 90, 110])])
+        an = analyze(b, a, method="budget-remaining")
+        self.assertEqual(an.method, "budget-remaining")
+        self.assertAlmostEqual(an.total.proj_var, an.total.var)
+
+    def test_cli_json_is_valid_and_has_keys(self):
+        import json
+        code, out, _ = self.run_cli("--json", "--no-commentary")
+        self.assertEqual(code, 0)
+        payload = json.loads(out)
+        self.assertTrue({"lines", "total", "projection"} <= set(payload))
+        self.assertEqual(payload["projection"], "run-rate")
+
+    def test_cli_json_with_fail_on_material_stays_valid_json(self):
+        import json
+        code, out, err = self.run_cli("--json", "--fail-on-material")
+        self.assertEqual(code, 1)
+        json.loads(out)  # stdout must still be pure JSON
+        self.assertIn("material", err)
+
+    def test_cli_pvm_example_returns_zero(self):
+        code, out, _ = self.run_cli("--pvm", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                                                           "data", "pvm_example.csv"))
+        self.assertEqual(code, 0)
+        self.assertIn("46,750.00", out)
+
+
+class TestRound3(unittest.TestCase):
+    def three_months(self):
+        return build([("Ops", "Rent", [100] * 12)], [("Ops", "Rent", [100] * 3)])
+
+    def test_closed_month_without_actuals_fails_closed(self):
+        b, a = self.three_months()
+        with self.assertRaisesRegex(ValueError, "no actuals"):
+            analyze(b, a, through="2026-06")
+        an = analyze(b, a, through="2026-06", allow_missing=True)
+        self.assertTrue(any("no actuals" in w for w in an.warnings))
+        self.assertEqual(an.total.ytd_actual, 300)
+
+    def test_wrong_year_through_is_an_error(self):
+        b, a = self.three_months()
+        with self.assertRaisesRegex(ValueError, "FY2025"):
+            analyze(b, a, through="2025-12")
+
+    def test_gap_is_left_out_of_run_rate_average(self):
+        self.assertAlmostEqual(run_rate_projection([100, None, 100], 9, n=3), 200 + 100 * 9)
+        b, a = self.three_months()
+        a = {k: v for k, v in a.items() if k[2] != "2026-03"}
+        a[("Ops", "Rent", "2026-04")] = 100
+        an = analyze(b, a, through="2026-04", run_rate_months=3, allow_missing=True)
+        self.assertAlmostEqual(an.total.projected_fy, 300 + 100 * 8)
+        self.assertAlmostEqual(an.monthly[5]["projection"], 100)
+
+    def test_labels_follow_the_method(self):
+        b, a = self.three_months()
+        for method, label, col in (("run-rate", "Run-Rate", "projected_fy_run_rate"),
+                                   ("budget-remaining", "Budget-Remaining", "projected_fy_budget_remaining")):
+            an = analyze(b, a, method=method)
+            self.assertIn(f"FY {label}", build_html(an))
+            self.assertIn(f"{label} Projection", monthly_svg(an))
+            with tempfile.TemporaryDirectory() as d:
+                path = os.path.join(d, "o.csv")
+                write_csv(an, path)
+                with open(path) as f:
+                    self.assertIn(col, next(csv.reader(f)))
+        self.assertNotIn("Run-Rate", build_html(analyze(b, a, method="budget-remaining")).split("<h2>Top")[0])
+
+    def test_library_validates_arguments(self):
+        b, a = self.three_months()
+        for bad in ("2026-13", "2026-6", "bad", "2026-00"):
+            with self.assertRaises(ValueError, msg=bad):
+                analyze(b, a, through=bad)
+        with self.assertRaises(ValueError):
+            analyze(b, a, method="bogus")
+
+    def test_all_zero_data_renders_every_chart(self):
+        b, a = build([("Ops", "Rent", [0] * 12), ("Ops", "Fees", [0] * 12)],
+                     [("Ops", "Rent", [0] * 2), ("Ops", "Fees", [0] * 2)])
+        an = analyze(b, a)
+        for fn in (waterfall_svg, monthly_svg, line_items_svg, heatmap_svg, cumulative_svg, flagged_svg):
+            for dark in (False, True):
+                svg = fn(an, dark=dark)
+                ET.fromstring(svg)
+                self.assertNotIn("nan", svg, fn.__name__)
+                self.assertNotIn("inf", svg, fn.__name__)
+        self.assertIn("<html", build_html(an))
+
+    def test_short_csv_rows_are_value_errors(self):
+        with tempfile.TemporaryDirectory() as d:
+            narrow, wide = os.path.join(d, "n.csv"), os.path.join(d, "w.csv")
+            with open(narrow, "w") as f:
+                f.write("cost_center,category,month,amount\nA,x\n")
+            with open(wide, "w") as f:
+                f.write("month,department,line_item,type,budget,actual\n2026-01\n")
+            for path in (narrow, wide):
+                with self.assertRaises(ValueError, msg=path):
+                    load_dataset(path, narrow)
+
+
 if __name__ == "__main__":
     unittest.main()
 
@@ -469,7 +638,7 @@ class TestVisuals(unittest.TestCase):
     def test_every_svg_generated_light_and_dark_and_valid_xml(self):
         with tempfile.TemporaryDirectory() as d:
             names = build_docs(d)
-            self.assertEqual(len(names), 14)
+            self.assertEqual(len(names), 18)
             for name in names:
                 ET.parse(os.path.join(d, name))
             for name in names:

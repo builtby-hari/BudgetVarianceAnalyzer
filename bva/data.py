@@ -5,9 +5,12 @@ Narrow (one file for budget, one for actuals): cost_center, category, month (YYY
 Wide (one file with both sides): month, department, line_item, type, budget, actual.
   Chosen automatically when the header has budget and actual columns. The department becomes
   the cost center and the line item becomes the category.
+Forecast (a third file): the narrow layout plus an optional as_of column (YYYY-MM), the last closed
+  month when that forecast version was made. A forecast row must be for a month after its as_of.
 """
 
 import csv
+import math
 import re
 
 from .variance import EXPENSE, REVENUE
@@ -22,6 +25,14 @@ def _reader(f):
     return csv.DictReader(line for line in f if not line.startswith("#"))
 
 
+def _text(row, column, where):
+    """A required text cell. A short row leaves it None, which is reported instead of crashing."""
+    value = (row.get(column) or "").strip()
+    if not value:
+        raise ValueError(f"{where}: missing {column} (short or blank row)")
+    return value
+
+
 def _month(raw, where):
     month = (raw or "").strip()
     if not _MONTH.match(month):
@@ -30,10 +41,17 @@ def _month(raw, where):
 
 
 def _amount(raw, where):
+    """Parse 1,234.50, $1,234.50 or accounting negatives like (1,234.50). nan and inf are rejected."""
     try:
-        return float(raw.replace(",", "").replace("$", ""))
+        text = raw.strip().replace(",", "").replace("$", "")
+        if text.startswith("(") and text.endswith(")"):
+            text = "-" + text[1:-1]
+        value = float(text)
     except (ValueError, AttributeError):
         raise ValueError(f"{where}: bad amount {raw!r}") from None
+    if not math.isfinite(value):
+        raise ValueError(f"{where}: bad amount {raw!r}")
+    return value
 
 
 def _type(raw, where):
@@ -50,11 +68,13 @@ def _set_kind(kinds, key, kind, where):
         raise ValueError(f"{where}: {key[0]} / {key[1]} is typed {kind} here but {prev} elsewhere")
 
 
-def load_amounts(path, kinds=None):
+def load_amounts(path, kinds=None, versioned=False):
     """Return {(cost_center, category, 'YYYY-MM'): amount}. Duplicate keys are summed
     (like multiple GL postings). Lines starting with '#' are comments.
     If the file has a type column, each explicit type is recorded in `kinds`, keyed by
-    (cost_center, category), so the analysis can flip the sign for revenue lines."""
+    (cost_center, category), so the analysis can flip the sign for revenue lines.
+    With versioned=True the key gets a fourth part, the as_of month (None when the file has no
+    as_of column), and each row must be for a month after its as_of."""
     kinds = {} if kinds is None else kinds
     out = {}
     with open(path, newline="") as f:
@@ -63,16 +83,26 @@ def load_amounts(path, kinds=None):
         missing = [c for c in COLUMNS if c not in fields]
         if missing:
             raise ValueError(f"{path}: missing column(s): {', '.join(missing)}")
-        has_type = "type" in fields
+        has_type, has_asof = "type" in fields, "as_of" in fields
         for n, row in enumerate(reader, start=2):
             where = f"{path} row {n}"
             month = _month(row["month"], where)
             amount = _amount(row["amount"], where)
-            key = (row["cost_center"].strip(), row["category"].strip(), month)
+            key = (_text(row, "cost_center", where), _text(row, "category", where), month)
             if has_type:
                 _set_kind(kinds, key[:2], _type(row["type"], where), where)
+            if versioned:
+                as_of = _month(row["as_of"], where) if has_asof else None
+                if as_of is not None and as_of >= month:
+                    raise ValueError(f"{where}: as_of {as_of} must be before the forecast month {month}")
+                key += (as_of,)
             out[key] = out.get(key, 0.0) + amount
     return out
+
+
+def load_forecast(path, kinds=None):
+    """Return {(cost_center, category, month, as_of): amount} from a forecast file (as_of may be None)."""
+    return load_amounts(path, kinds, versioned=True)
 
 
 def is_wide(path):
@@ -92,7 +122,7 @@ def load_wide(path):
             raise ValueError(f"{path}: missing column(s): {', '.join(missing)}")
         for n, row in enumerate(reader, start=2):
             where = f"{path} row {n}"
-            key = (row["department"].strip(), row["line_item"].strip(), _month(row["month"], where))
+            key = (_text(row, "department", where), _text(row, "line_item", where), _month(row["month"], where))
             _set_kind(kinds, key[:2], _type(row["type"], where), where)
             budget[key] = budget.get(key, 0.0) + _amount(row["budget"], where)
             actuals[key] = actuals.get(key, 0.0) + _amount(row["actual"], where)

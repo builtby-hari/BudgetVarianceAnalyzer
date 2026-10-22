@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 430" width="820" height="430" role="img" aria-label="Forecast Accuracy: MAPE by Line">
+<text x="410.0" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Forecast Accuracy: MAPE by Line</text>
+<text x="410.0" y="45" text-anchor="middle" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Synthetic sample data. Prior forecast vs actual, closed months. Pooled MAPE weighted by actual: expense 2.5%.</text>
+<line x1="330" x2="330" y1="72" y2="374" stroke="#e2e8f0"/>
+<rect x="330" y="80" width="290.0" height="16" fill="#60a5fa"/>
+<text x="322" y="92" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">FP&amp;A / Software &amp; Data</text>
+<text x="626.0" y="92" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">7.8% (under-forecast)</text>
+<rect x="330" y="110" width="285.7" height="16" fill="#60a5fa"/>
+<text x="322" y="122" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Technology / Contractors</text>
+<text x="621.7" y="122" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">7.6% (under-forecast)</text>
+<rect x="330" y="140" width="163.0" height="16" fill="#60a5fa"/>
+<text x="322" y="152" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Capital Markets / Travel &amp; Training</text>
+<text x="499.0" y="152" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">4.4% (under-forecast)</text>
+<rect x="330" y="170" width="161.6" height="16" fill="#60a5fa"/>
+<text x="322" y="182" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Capital Markets / Software &amp; Data</text>
+<text x="497.6" y="182" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">4.3% (under-forecast)</text>
+<rect x="330" y="200" width="144.5" height="16" fill="#60a5fa"/>
+<text x="322" y="212" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">FP&amp;A / Professional Services</text>
+<text x="480.5" y="212" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">3.9% (over-forecast)</text>
+<rect x="330" y="230" width="90.4" height="16" fill="#60a5fa"/>
+<text x="322" y="242" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Capital Markets / Professional Services</text>
+<text x="426.4" y="242" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">2.4% (under-forecast)</text>
+<rect x="330" y="260" width="89.2" height="16" fill="#60a5fa"/>
+<text x="322" y="272" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Credit Reporting / Software &amp; Data</text>
+<text x="425.2" y="272" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">2.4% (under-forecast)</text>
+<rect x="330" y="290" width="84.9" height="16" fill="#60a5fa"/>
+<text x="322" y="302" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Credit Reporting / Salaries &amp; Benefits</text>
+<text x="420.9" y="302" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">2.3% (under-forecast)</text>
+<rect x="330" y="320" width="84.5" height="16" fill="#60a5fa"/>
+<text x="322" y="332" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">FP&amp;A / Contractors</text>
+<text x="420.5" y="332" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">2.3% (under-forecast)</text>
+<rect x="330" y="350" width="80.2" height="16" fill="#60a5fa"/>
+<text x="322" y="362" text-anchor="end" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">Capital Markets / Contractors</text>
+<text x="416.2" y="362" font-size="11" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">2.1% (under-forecast)</text>
+</svg>

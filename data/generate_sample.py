@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Generate data/budget.csv and data/actuals.csv: SYNTHETIC FP&A data (not any real company).
+"""Generate data/budget.csv, data/actuals.csv and data/forecast.csv: SYNTHETIC FP&A data (not any real company).
 
 4 cost centers x 6 expense categories x 12 months of budget; actuals for Jan-Sep 2026.
+Forecast versions as of Mar, Jun and Sep: each scales the remaining budget by the last three closed
+months' actual-to-budget ratio, plus a little noise.
 Seeded for reproducibility. Run from the project root:  python3 data/generate_sample.py
 """
 
@@ -10,6 +12,7 @@ import os
 import random
 
 YEAR, CLOSED = 2026, 9
+FORECAST_AS_OF = (3, 6, 9)
 HERE = os.path.dirname(os.path.abspath(__file__))
 CATS = ["Salaries & Benefits", "Contractors", "Software & Data", "Travel & Training",
         "Professional Services", "Facilities & Other"]
@@ -39,7 +42,8 @@ DRIFT = {
 
 def main():
     rng = random.Random(2026)
-    budget, actual = [], []
+    budget, actual, forecast = [], [], []
+    frng = random.Random(2027)   # separate stream, so budget.csv and actuals.csv stay unchanged
     for cc, annual in ANNUAL_K.items():
         for cat, k in zip(CATS, annual):
             w = SEASON.get(cat, [1.0] * 12)
@@ -53,11 +57,23 @@ def main():
                     drift = d if m >= start else 0.0
                     a = round(b * (1 + drift + rng.uniform(-0.03, 0.03)), -2)
                     actual.append([cc, cat, month, f"{a:.0f}"])
-    for name, rows, note in (("budget.csv", budget, "FY2026 budget"), ("actuals.csv", actual, "FY2026 actuals, Jan-Sep")):
+    b_of = {(r[0], r[1], r[2]): float(r[3]) for r in budget}
+    a_of = {(r[0], r[1], r[2]): float(r[3]) for r in actual}
+    for cc, annual in ANNUAL_K.items():
+        for cat in CATS:
+            for v in FORECAST_AS_OF:
+                last3 = [f"{YEAR}-{m:02d}" for m in range(v - 2, v + 1)]
+                ratio = sum(a_of[(cc, cat, m)] for m in last3) / sum(b_of[(cc, cat, m)] for m in last3)
+                for m in range(v + 1, 13):
+                    month = f"{YEAR}-{m:02d}"
+                    f = round(b_of[(cc, cat, month)] * ratio * (1 + frng.uniform(-0.02, 0.02)), -2)
+                    forecast.append([cc, cat, month, f"{f:.0f}", f"{YEAR}-{v:02d}"])
+    for name, rows, note in (("budget.csv", budget, "FY2026 budget"), ("actuals.csv", actual, "FY2026 actuals, Jan-Sep"),
+                             ("forecast.csv", forecast, "FY2026 forecast versions as of 2026-03, 2026-06 and 2026-09")):
         with open(os.path.join(HERE, name), "w", newline="") as f:
             f.write(f"# SYNTHETIC SAMPLE DATA ({note}): invented cost centers and amounts, not real financials.\n")
             w = csv.writer(f)
-            w.writerow(["cost_center", "category", "month", "amount"])
+            w.writerow(["cost_center", "category", "month", "amount"] + (["as_of"] if name == "forecast.csv" else []))
             w.writerows(rows)
         print(f"wrote {len(rows)} rows to {name}")
 
