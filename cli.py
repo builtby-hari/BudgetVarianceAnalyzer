@@ -8,11 +8,21 @@ import os
 import re
 import sys
 
-from bva import (Thresholds, all_commentary, analyze, forecast_analysis, forecast_commentary, load_dataset,
-                 load_forecast, is_wide, money, top_drivers)
-from bva.pvm import load_pvm, price_volume_mix
+from bva import (
+    Thresholds,
+    all_commentary,
+    analyze,
+    forecast_analysis,
+    forecast_commentary,
+    is_wide,
+    load_dataset,
+    load_forecast,
+    top_drivers,
+)
 from bva.charts import write_svgs
+from bva.pvm import load_pvm, price_volume_mix
 from bva.report import write_accuracy_csv, write_csv, write_forecast_csv, write_html
+from bva.xlsx import write_xlsx
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -42,6 +52,7 @@ def build_parser():
     p.add_argument("--accuracy-csv", help="write the forecast accuracy CSV (needs --forecast)")
     p.add_argument("--no-commentary", action="store_true")
     p.add_argument("--csv", help="write line-level variance CSV")
+    p.add_argument("--xlsx", help="write an Excel workbook with live variance, materiality and subtotal formulas")
     p.add_argument("--html", help="write the static HTML report")
     p.add_argument("--charts", help="write the SVG charts (waterfall, monthly, bridge) into this folder")
     return p
@@ -70,7 +81,10 @@ def main(argv=None):
     if min(a.run_rate_months, a.amount_threshold, a.pct_threshold, a.top) < 0:
         parser.error("--run-rate-months, thresholds and --top cannot be negative")
     if a.pvm:
-        r = price_volume_mix((bq, bp, aq, ap) for _, bq, bp, aq, ap in load_pvm(a.pvm))
+        try:
+            r = price_volume_mix((bq, bp, aq, ap) for _, bq, bp, aq, ap in load_pvm(a.pvm))
+        except (OSError, ValueError) as e:
+            parser.error(str(e))
         for label, v in (("Budget revenue", r.budget_revenue), ("Price", r.price), ("Volume", r.volume),
                          ("Mix", r.mix), ("Actual revenue", r.actual_revenue)):
             print(f"{label:<16}{v:>14,.2f}")
@@ -81,9 +95,12 @@ def main(argv=None):
         parser.error("--forecast-csv and --accuracy-csv need --forecast")
     th = Thresholds(a.amount_threshold, a.pct_threshold / 100)
     actuals_path = a.actuals
-    if actuals_path is None and not is_wide(a.budget):
-        actuals_path = os.path.join(HERE, "data", "actuals.csv")
-    budget, actuals, kinds = load_dataset(a.budget, actuals_path)
+    try:
+        if actuals_path is None and not is_wide(a.budget):
+            actuals_path = os.path.join(HERE, "data", "actuals.csv")
+        budget, actuals, kinds = load_dataset(a.budget, actuals_path)
+    except (OSError, ValueError) as e:
+        parser.error(str(e))
     try:
         an = analyze(budget, actuals, a.through, th, a.run_rate_months, kinds, a.projection, a.allow_missing_actuals)
     except ValueError as e:
@@ -91,15 +108,15 @@ def main(argv=None):
     if a.forecast:
         try:
             an.forecast = forecast_analysis(an, budget, actuals, load_forecast(a.forecast, kinds), th)
-        except ValueError as e:
+        except (OSError, ValueError) as e:
             parser.error(str(e))
     say = (lambda *x, **k: None) if a.json else print
     for w in an.warnings:
         say("warning:", w)
-    say(f"FY{an.year} budget variance, actuals through {an.through} ({an.months_elapsed} months). "
+    say(f"FY{an.year} budget variance, actuals through {an.through} ({an.months_elapsed} month{'s' if an.months_elapsed != 1 else ''}). "
           f"Variance = actual - budget. Expense: + is over budget (unfavorable). Revenue: + is above budget (favorable).")
     say(f"Materiality: over ${th.amount:,.0f} AND over {th.pct*100:g}%.  Projection: "
-          + (f"YTD plus remaining budget." if an.method == "budget-remaining" else f"run-rate, avg of last {an.run_rate_months or 'all'} month(s).") + "\n")
+          + ("YTD plus remaining budget." if an.method == "budget-remaining" else f"run-rate, avg of last {an.run_rate_months or 'all'} month(s).") + "\n")
     say(f"{'Cost center':<18}{'YTD budget':>13}{'YTD actual':>13}{'Var $':>11}{'Var %':>8} F/U {'FY budget':>13}{'FY proj' if an.method != 'run-rate' else 'FY run-rate':>13}{'Proj var':>11}")
     for r in an.cost_centers + [an.total]:
         say(f"{r.cost_center:<18}{r.ytd_budget:>13,.0f}{r.ytd_actual:>13,.0f}{r.var:>+11,.0f}{_p(r.var_pct)} {r.status:^3}"
@@ -148,6 +165,10 @@ def main(argv=None):
         os.makedirs(os.path.dirname(os.path.abspath(a.csv)), exist_ok=True)
         write_csv(an, a.csv)
         say("\nwrote", a.csv)
+    if a.xlsx:
+        os.makedirs(os.path.dirname(os.path.abspath(a.xlsx)), exist_ok=True)
+        write_xlsx(an, th, a.xlsx)
+        say("\nwrote", a.xlsx)
     for path, writer in ((a.forecast_csv, write_forecast_csv), (a.accuracy_csv, write_accuracy_csv)):
         if path:
             os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)

@@ -125,7 +125,8 @@ def load_wide(path):
             key = (_text(row, "department", where), _text(row, "line_item", where), _month(row["month"], where))
             _set_kind(kinds, key[:2], _type(row["type"], where), where)
             budget[key] = budget.get(key, 0.0) + _amount(row["budget"], where)
-            actuals[key] = actuals.get(key, 0.0) + _amount(row["actual"], where)
+            if (row.get("actual") or "").strip():   # blank actual = month not closed yet; budget still counts
+                actuals[key] = actuals.get(key, 0.0) + _amount(row["actual"], where)
     return budget, actuals, kinds
 
 

@@ -397,6 +397,19 @@ class TestWideFormat(unittest.TestCase):
         self.assertEqual(len(an.lines), 15)
         self.assertEqual(len(an.cost_centers), 3)
 
+    def test_wide_blank_actual_marks_open_month(self):
+        rows = ["month,department,line_item,type,budget,actual",
+                "2026-01,Ops,Rent,expense,100,110", "2026-02,Ops,Rent,expense,100,", "2026-03,Ops,Rent,expense,100,"]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "wide.csv")
+            with open(path, "w") as f:
+                f.write("\n".join(rows) + "\n")
+            budget, actuals, kinds = load_dataset(path)
+        an = analyze(budget, actuals, kinds=kinds)
+        self.assertEqual((an.through, an.months_elapsed), ("2026-01", 1))
+        self.assertEqual(an.total.fy_budget, 300)
+        self.assertEqual(an.total.ytd_actual, 110)
+
     def test_operating_income_only_shown_when_data_has_revenue(self):
         import contextlib, io, shutil
         import cli
@@ -712,3 +725,39 @@ class TestVisuals(unittest.TestCase):
                 with open(os.path.join(d, name), "rb") as f:
                     self.assertEqual(f.read(8), b"\x89PNG\r\n\x1a\n")
 
+
+
+class TestXlsxExport(unittest.TestCase):
+    def test_workbook_formulas_and_cached_values_agree(self):
+        import contextlib, io, shutil, zipfile
+        import cli
+        from bva import status
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp)
+        path = os.path.join(tmp, "v.xlsx")
+        with contextlib.redirect_stdout(io.StringIO()):
+            cli.main(["--no-commentary", "--xlsx", path])
+        m = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+        with zipfile.ZipFile(path) as z:
+            for name in z.namelist():  # every part is well-formed XML
+                ET.fromstring(z.read(name))
+            sheet = ET.fromstring(z.read("xl/worksheets/sheet1.xml"))
+        rows = {}
+        for c in sheet.iter(m + "c"):
+            el = c.find(m + "v") if c.find(m + "v") is not None else c.find(f"{m}is/{m}t")
+            f = c.find(m + "f")
+            rows.setdefault(int(c.get("r")[1:]), {})[c.get("r")[0]] = (
+                None if el is None else el.text, None if f is None else f.text)
+        title = next(n for n, r in rows.items() if r["A"][0] == "Expense Subtotals by Cost Center")
+        lines = [r for n, r in rows.items() if 6 <= n < title]
+        subs = [r for n, r in rows.items() if n > title]
+        num = lambda r, col: float(r[col][0])
+        for r in lines:
+            self.assertAlmostEqual(num(r, "F"), num(r, "E") - num(r, "D"))
+            self.assertEqual(r["H"][0], status(num(r, "F"), kind=r["C"][0]))
+        for r in subs:  # SUMIFS over expense lines (all of them for the total)
+            self.assertIn("SUMIFS(", r["D"][1])
+            members = [x for x in lines if x["C"][0] == EXPENSE and r["A"][0] in ("Total", x["A"][0])]
+            for col in "DEJK":
+                self.assertAlmostEqual(num(r, col), sum(num(x, col) for x in members))
+        self.assertEqual(subs[-1]["A"][0], "Total")

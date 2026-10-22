@@ -5,6 +5,16 @@
   </picture>
 </p>
 
+**For an FP&A team:** turn budget and actuals CSVs into the month-end variance pack in one command.
+It flags the lines that matter, drafts the commentary, and bridges budget to actual operating income.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/bridge-dark.svg">
+  <img alt="Operating Income Bridge from Budget to Actual, One Step per Category, from the Wide Sample (Synthetic Data)" src="docs/bridge.svg" width="100%">
+</picture>
+
+*Operating income bridge, YTD budget to actual by category, from `data/sample_wide.csv` (synthetic, revenue and expense lines, actuals through 2026-12). The steps sum exactly to the favorable variance. The axis is truncated and says where it starts.*
+
 ![Python](https://img.shields.io/badge/python-3.9%2B-1f3a5f) ![Dependencies](https://img.shields.io/badge/dependencies-none-1f3a5f) ![License](https://img.shields.io/badge/license-MIT-14b8a6)
 
 A small, dependency-free Python tool that compares budget to actuals by cost
@@ -23,7 +33,6 @@ Standard library only (Python 3.9+). No `pip install` needed.
 
 ## Contents
 
-- [Operating Income Bridge](#operating-income-bridge)
 - [Results at a Glance](#results-at-a-glance)
 - [How It Works](#how-it-works)
 - [Quickstart](#quickstart)
@@ -38,15 +47,6 @@ Standard library only (Python 3.9+). No `pip install` needed.
 - [Data Sources](#data-sources)
 - [License](#license)
 - [Glossary](#glossary)
-
-## Operating Income Bridge
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/bridge-dark.svg">
-  <img alt="Operating Income Bridge from Budget to Actual, One Step per Category, from the Wide Sample (Synthetic Data)" src="docs/bridge.svg" width="100%">
-</picture>
-
-*Operating income bridge, YTD budget to actual by category, from `data/sample_wide.csv` (synthetic, revenue and expense lines, actuals through 2026-12). The steps sum exactly to the operating income variance. The axis is truncated and says where it starts.*
 
 ## Results at a Glance
 
@@ -129,14 +129,15 @@ python3 cli.py --budget data/sample_wide.csv            # wide layout with reven
 python3 cli.py --through 2026-06 --top 8                # as of an earlier close
 python3 cli.py --fail-on-material                       # exit 1 if any line is material (scripts, CI)
 python3 cli.py --projection budget-remaining            # full year = YTD actual + remaining budget
-python3 cli.py --allow-missing-actuals                   # count closed months with no actuals as $0 instead of failing
+python3 cli.py --allow-missing-actuals                  # count closed months with no actuals as $0 instead of failing
 python3 cli.py --json                                   # machine-readable analysis on stdout
 python3 cli.py --forecast data/forecast.csv             # rolling forecast: outlook, accuracy, commentary drafts
 python3 cli.py --forecast data/forecast.csv --forecast-csv output/outlook.csv --accuracy-csv output/accuracy.csv
 python3 cli.py --pvm data/pvm_example.csv               # revenue price / volume / mix split
 python3 cli.py --amount-threshold 50000 --pct-threshold 5 --run-rate-months 6
 python3 cli.py --csv output/variance_detail.csv --html output/report.html --charts output/charts
-python3 cli.py --budget my_budget.csv --actuals my_actuals.csv
+python3 cli.py --xlsx output/variance.xlsx                # Excel: blue inputs, live variance, materiality and subtotal formulas
+python3 cli.py --budget my_budget.csv --actuals my_actuals.csv   # your own files (placeholder names)
 python3 -m unittest discover -v                         # run the tests
 python3 -m bva.charts                                   # regenerate every SVG in docs/ (light and dark)
 python3 data/generate_sample.py                         # regenerate the synthetic data
@@ -171,6 +172,8 @@ month,department,line_item,type,budget,actual
 - In the wide layout the department is the cost center and the line item is the
   category. It is detected when the header has `budget` and `actual` columns,
   and then no separate actuals file is needed.
+- A blank `actual` cell marks a month that has not closed, so a wide file can carry the
+  full-year budget. A blank inside a closed month is still an error.
 - `type` is case-insensitive and must be `expense` or `revenue`. A missing
   `type` column means expense. Any other value raises an error that names the row.
 - A line cannot be revenue in one row and expense in another. That raises an error too.
@@ -246,7 +249,7 @@ and faded bars are not. Under budget is teal and over budget is orange.
 
 ```
 FY2026 budget variance, actuals through 2026-09 (9 months). Variance = actual - budget. Expense: + is over budget (unfavorable). Revenue: + is above budget (favorable).
-Materiality: over $25,000 AND over 10%.  Run-rate: avg of last 3 month(s).
+Materiality: over $25,000 AND over 10%.  Projection: run-rate, avg of last 3 month(s).
 
 Cost center          YTD budget   YTD actual      Var $   Var % F/U     FY budget  FY run-rate   Proj var
 Capital Markets       8,563,100    8,698,800   +135,700  +1.6%  U    11,500,900   11,631,600   +130,700
@@ -476,8 +479,9 @@ Python · FP&A variance analysis · Operating income bridge · Materiality rules
 - The price/volume/mix split covers revenue only and is a separate input file.
 - The operating-income total is YTD only. It has no full-year projection.
 - There is no budget phasing logic beyond what is in the file, and no prior-year comparison.
-- Forecast accuracy compares each month with the latest version made before it. Months with
-  a zero actual are left out of MAPE.
+- Forecast accuracy scores each month against only the latest version made before it, so
+  the horizon split shows how far ahead that version was, not how every older version did.
+  Months with a zero actual are left out of MAPE.
 - The forecast file is the narrow layout only.
 - A closed month with no actuals for a line is an error, because a late feed would
   otherwise look like a favorable variance. `--allow-missing-actuals` counts those
@@ -496,7 +500,7 @@ Python · FP&A variance analysis · Operating income bridge · Materiality rules
 1. Headcount/rate decomposition for compensation lines, and price/volume on the line-level data.
 2. Seasonal run-rate using prior-year phasing.
 3. Per-category materiality thresholds from a config file.
-4. Excel export with formulas, so reviewers can trace each number.
+4. Score every forecast version, not only the latest, for a full accuracy-by-horizon view.
 
 ## Project Layout
 
@@ -504,10 +508,11 @@ Python · FP&A variance analysis · Operating income bridge · Materiality rules
 bva/data.py         CSV loaders: narrow and wide layouts, type column, validation
 bva/variance.py     variance, materiality, YTD, run-rate, roll-ups, operating income, bridge steps, top drivers
 bva/commentary.py   template-based commentary, plus forecast commentary drafts
-bva/charts.py       hand-written SVG charts, light and dark: bridge, line items, heatmap, cumulative, flagged, banner, terminal output
+bva/charts.py       hand-written SVG charts, light and dark: bridge, line items, heatmap, cumulative, flagged, forecast outlook and accuracy, banner, terminal output
 bva/forecast.py     rolling forecast: three-way variance, outlook, accuracy (MAPE, bias)
 bva/pvm.py          price / volume / mix split and flexed budget
 bva/report.py       static HTML report and CSV writer
+bva/xlsx.py         Excel export with live formulas, standard library only
 cli.py              command line interface
 plots_mpl.py        optional matplotlib PNG versions of the main charts (needs requirements-extra.txt)
 requirements-extra.txt  optional dependency list (matplotlib)
