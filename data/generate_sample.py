@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+"""Generate data/budget.csv, data/actuals.csv and data/forecast.csv: SYNTHETIC FP&A data (not any real company).
+
+4 cost centers x 6 expense categories x 12 months of budget; actuals for Jan-Sep 2026.
+Forecast versions as of Mar, Jun and Sep: each scales the remaining budget by the last three closed
+months' actual-to-budget ratio, plus a little noise.
+Seeded for reproducibility. Run from the project root:  python3 data/generate_sample.py
+"""
+
+import csv
+import os
+import random
+
+YEAR, CLOSED = 2026, 9
+FORECAST_AS_OF = (3, 6, 9)
+HERE = os.path.dirname(os.path.abspath(__file__))
+CATS = ["Salaries & Benefits", "Contractors", "Software & Data", "Travel & Training",
+        "Professional Services", "Facilities & Other"]
+# annual budget in $K per cost center, in CATS order
+ANNUAL_K = {
+    "Operations": [5200, 900, 700, 150, 600, 650],
+    "Marketing":  [7400, 800, 1500, 600, 450, 750],
+    "Finance":             [3300, 300, 350, 120, 500, 430],
+    "Technology":       [8000, 2800, 2600, 160, 300, 500],
+}
+# monthly phasing weights (sum to 12): flat, with seasonality for travel and professional fees
+SEASON = {
+    "Travel & Training": [0.5, 0.7, 1.1, 1.2, 1.3, 1.0, 0.6, 0.7, 1.4, 1.5, 1.2, 0.8],
+    "Professional Services": [0.8, 1.0, 1.0, 0.8, 0.8, 0.9, 0.8, 0.8, 1.1, 1.3, 1.4, 1.3],
+}
+# (cost center, category) -> (start month, actual/budget drift): the planted storylines
+DRIFT = {
+    ("Technology", "Contractors"): (3, 0.28),            # backfill ramp-up
+    ("Technology", "Software & Data"): (1, 0.12),         # license true-up
+    ("Marketing", "Travel & Training"): (2, 0.30),  # more conferences and desk travel
+    ("Marketing", "Software & Data"): (5, 0.07),
+    ("Operations", "Salaries & Benefits"): (1, -0.05),   # open headcount
+    ("Finance", "Professional Services"): (1, -0.25),        # deferred consulting
+    ("Finance", "Software & Data"): (4, 0.15),
+}
+
+
+def main():
+    rng = random.Random(2026)
+    budget, actual, forecast = [], [], []
+    frng = random.Random(2027)   # separate stream, so budget.csv and actuals.csv stay unchanged
+    for cc, annual in ANNUAL_K.items():
+        for cat, k in zip(CATS, annual):
+            w = SEASON.get(cat, [1.0] * 12)
+            assert abs(sum(w) - 12) < 1e-9, cat
+            for m in range(1, 13):
+                b = round(k * 1000 / 12 * w[m - 1], -2)
+                month = f"{YEAR}-{m:02d}"
+                budget.append([cc, cat, month, f"{b:.0f}"])
+                if m <= CLOSED:
+                    start, d = DRIFT.get((cc, cat), (1, 0.0))
+                    drift = d if m >= start else 0.0
+                    a = round(b * (1 + drift + rng.uniform(-0.03, 0.03)), -2)
+                    actual.append([cc, cat, month, f"{a:.0f}"])
+    b_of = {(r[0], r[1], r[2]): float(r[3]) for r in budget}
+    a_of = {(r[0], r[1], r[2]): float(r[3]) for r in actual}
+    for cc, annual in ANNUAL_K.items():
+        for cat in CATS:
+            for v in FORECAST_AS_OF:
+                last3 = [f"{YEAR}-{m:02d}" for m in range(v - 2, v + 1)]
+                ratio = sum(a_of[(cc, cat, m)] for m in last3) / sum(b_of[(cc, cat, m)] for m in last3)
+                for m in range(v + 1, 13):
+                    month = f"{YEAR}-{m:02d}"
+                    f = round(b_of[(cc, cat, month)] * ratio * (1 + frng.uniform(-0.02, 0.02)), -2)
+                    forecast.append([cc, cat, month, f"{f:.0f}", f"{YEAR}-{v:02d}"])
+    for name, rows, note in (("budget.csv", budget, "FY2026 budget"), ("actuals.csv", actual, "FY2026 actuals, Jan-Sep"),
+                             ("forecast.csv", forecast, "FY2026 forecast versions as of 2026-03, 2026-06 and 2026-09")):
+        with open(os.path.join(HERE, name), "w", newline="") as f:
+            f.write(f"# SYNTHETIC SAMPLE DATA ({note}): invented cost centers and amounts, not real financials.\n")
+            w = csv.writer(f)
+            w.writerow(["cost_center", "category", "month", "amount"] + (["as_of"] if name == "forecast.csv" else []))
+            w.writerows(rows)
+        print(f"wrote {len(rows)} rows to {name}")
+
+
+if __name__ == "__main__":
+    main()

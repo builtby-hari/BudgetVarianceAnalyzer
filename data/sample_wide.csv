@@ -1,0 +1,182 @@
+# SYNTHETIC SAMPLE DATA (FY2026 wide budget and actuals, 12 months): invented departments, line items and amounts, not real financials.
+month,department,line_item,type,budget,actual
+2026-01,North America,Sales,revenue,120000,114558
+2026-01,North America,Services,revenue,45000,45031
+2026-01,North America,Payroll,expense,70000,70292
+2026-01,North America,Software,expense,9000,8982
+2026-01,North America,Marketing,expense,12000,11459
+2026-01,EMEA,Sales,revenue,84000,80405
+2026-01,EMEA,Services,revenue,31500,32657
+2026-01,EMEA,Payroll,expense,49000,51435
+2026-01,EMEA,Software,expense,6300,6883
+2026-01,EMEA,Marketing,expense,8400,8714
+2026-01,APAC,Sales,revenue,60000,59621
+2026-01,APAC,Services,revenue,22500,22075
+2026-01,APAC,Payroll,expense,35000,31618
+2026-01,APAC,Software,expense,4500,4859
+2026-01,APAC,Marketing,expense,6000,6333
+2026-02,North America,Sales,revenue,120000,119991
+2026-02,North America,Services,revenue,45000,39083
+2026-02,North America,Payroll,expense,70000,62855
+2026-02,North America,Software,expense,9000,8620
+2026-02,North America,Marketing,expense,12000,11847
+2026-02,EMEA,Sales,revenue,84000,83019
+2026-02,EMEA,Services,revenue,31500,30468
+2026-02,EMEA,Payroll,expense,49000,51767
+2026-02,EMEA,Software,expense,6300,6143
+2026-02,EMEA,Marketing,expense,8400,8750
+2026-02,APAC,Sales,revenue,60000,59619
+2026-02,APAC,Services,revenue,22500,20932
+2026-02,APAC,Payroll,expense,35000,39908
+2026-02,APAC,Software,expense,4500,4765
+2026-02,APAC,Marketing,expense,6000,6623
+2026-03,North America,Sales,revenue,120000,111934
+2026-03,North America,Services,revenue,45000,41653
+2026-03,North America,Payroll,expense,70000,69714
+2026-03,North America,Software,expense,9000,9113
+2026-03,North America,Marketing,expense,12000,12771
+2026-03,EMEA,Sales,revenue,84000,82732
+2026-03,EMEA,Services,revenue,31500,29709
+2026-03,EMEA,Payroll,expense,49000,46698
+2026-03,EMEA,Software,expense,6300,6196
+2026-03,EMEA,Marketing,expense,8400,9286
+2026-03,APAC,Sales,revenue,60000,55291
+2026-03,APAC,Services,revenue,22500,22155
+2026-03,APAC,Payroll,expense,35000,36745
+2026-03,APAC,Software,expense,4500,4121
+2026-03,APAC,Marketing,expense,6000,6140
+2026-04,North America,Sales,revenue,120000,125805
+2026-04,North America,Services,revenue,45000,38211
+2026-04,North America,Payroll,expense,70000,69824
+2026-04,North America,Software,expense,9000,9113
+2026-04,North America,Marketing,expense,12000,11554
+2026-04,EMEA,Sales,revenue,84000,83987
+2026-04,EMEA,Services,revenue,31500,30437
+2026-04,EMEA,Payroll,expense,49000,44956
+2026-04,EMEA,Software,expense,6300,6791
+2026-04,EMEA,Marketing,expense,8400,8962
+2026-04,APAC,Sales,revenue,60000,61605
+2026-04,APAC,Services,revenue,22500,23770
+2026-04,APAC,Payroll,expense,35000,36587
+2026-04,APAC,Software,expense,4500,4628
+2026-04,APAC,Marketing,expense,6000,5574
+2026-05,North America,Sales,revenue,120000,120831
+2026-05,North America,Services,revenue,45000,41998
+2026-05,North America,Payroll,expense,70000,69182
+2026-05,North America,Software,expense,9000,8383
+2026-05,North America,Marketing,expense,12000,11427
+2026-05,EMEA,Sales,revenue,84000,78803
+2026-05,EMEA,Services,revenue,31500,32991
+2026-05,EMEA,Payroll,expense,49000,43011
+2026-05,EMEA,Software,expense,6300,5783
+2026-05,EMEA,Marketing,expense,8400,8709
+2026-05,APAC,Sales,revenue,60000,63396
+2026-05,APAC,Services,revenue,22500,22606
+2026-05,APAC,Payroll,expense,35000,31045
+2026-05,APAC,Software,expense,4500,3797
+2026-05,APAC,Marketing,expense,6000,6270
+2026-06,North America,Sales,revenue,120000,111099
+2026-06,North America,Services,revenue,45000,40627
+2026-06,North America,Payroll,expense,70000,76189
+2026-06,North America,Software,expense,9000,9874
+2026-06,North America,Marketing,expense,12000,12372
+2026-06,EMEA,Sales,revenue,84000,82719
+2026-06,EMEA,Services,revenue,31500,31376
+2026-06,EMEA,Payroll,expense,49000,55447
+2026-06,EMEA,Software,expense,6300,6699
+2026-06,EMEA,Marketing,expense,8400,8873
+2026-06,APAC,Sales,revenue,60000,60172
+2026-06,APAC,Services,revenue,22500,19708
+2026-06,APAC,Payroll,expense,35000,38840
+2026-06,APAC,Software,expense,4500,4891
+2026-06,APAC,Marketing,expense,6000,6342
+2026-07,North America,Sales,revenue,120000,102188
+2026-07,North America,Services,revenue,45000,41939
+2026-07,North America,Payroll,expense,70000,75527
+2026-07,North America,Software,expense,9000,8039
+2026-07,North America,Marketing,expense,12000,12085
+2026-07,EMEA,Sales,revenue,84000,86618
+2026-07,EMEA,Services,revenue,31500,28077
+2026-07,EMEA,Payroll,expense,49000,55503
+2026-07,EMEA,Software,expense,6300,6669
+2026-07,EMEA,Marketing,expense,8400,8480
+2026-07,APAC,Sales,revenue,60000,59370
+2026-07,APAC,Services,revenue,22500,22702
+2026-07,APAC,Payroll,expense,35000,35995
+2026-07,APAC,Software,expense,4500,4951
+2026-07,APAC,Marketing,expense,6000,5842
+2026-08,North America,Sales,revenue,120000,113414
+2026-08,North America,Services,revenue,45000,46463
+2026-08,North America,Payroll,expense,70000,71531
+2026-08,North America,Software,expense,9000,8625
+2026-08,North America,Marketing,expense,12000,13035
+2026-08,EMEA,Sales,revenue,84000,88866
+2026-08,EMEA,Services,revenue,31500,29714
+2026-08,EMEA,Payroll,expense,49000,45247
+2026-08,EMEA,Software,expense,6300,6367
+2026-08,EMEA,Marketing,expense,8400,8480
+2026-08,APAC,Sales,revenue,60000,57127
+2026-08,APAC,Services,revenue,22500,23721
+2026-08,APAC,Payroll,expense,35000,33184
+2026-08,APAC,Software,expense,4500,4987
+2026-08,APAC,Marketing,expense,6000,5587
+2026-09,North America,Sales,revenue,120000,110733
+2026-09,North America,Services,revenue,45000,45355
+2026-09,North America,Payroll,expense,70000,76931
+2026-09,North America,Software,expense,9000,9721
+2026-09,North America,Marketing,expense,12000,12530
+2026-09,EMEA,Sales,revenue,84000,82197
+2026-09,EMEA,Services,revenue,31500,30843
+2026-09,EMEA,Payroll,expense,49000,51953
+2026-09,EMEA,Software,expense,6300,6348
+2026-09,EMEA,Marketing,expense,8400,8731
+2026-09,APAC,Sales,revenue,60000,60262
+2026-09,APAC,Services,revenue,22500,21826
+2026-09,APAC,Payroll,expense,35000,37572
+2026-09,APAC,Software,expense,4500,4768
+2026-09,APAC,Marketing,expense,6000,6964
+2026-10,North America,Sales,revenue,120000,118740
+2026-10,North America,Services,revenue,45000,42495
+2026-10,North America,Payroll,expense,70000,69574
+2026-10,North America,Software,expense,9000,9172
+2026-10,North America,Marketing,expense,12000,13016
+2026-10,EMEA,Sales,revenue,84000,79784
+2026-10,EMEA,Services,revenue,31500,31284
+2026-10,EMEA,Payroll,expense,49000,56282
+2026-10,EMEA,Software,expense,6300,5295
+2026-10,EMEA,Marketing,expense,8400,7907
+2026-10,APAC,Sales,revenue,60000,59078
+2026-10,APAC,Services,revenue,22500,22363
+2026-10,APAC,Payroll,expense,35000,36285
+2026-10,APAC,Software,expense,4500,4454
+2026-10,APAC,Marketing,expense,6000,6395
+2026-11,North America,Sales,revenue,120000,118431
+2026-11,North America,Services,revenue,45000,42240
+2026-11,North America,Payroll,expense,70000,83307
+2026-11,North America,Software,expense,9000,9404
+2026-11,North America,Marketing,expense,12000,11774
+2026-11,EMEA,Sales,revenue,84000,80979
+2026-11,EMEA,Services,revenue,31500,30129
+2026-11,EMEA,Payroll,expense,49000,49765
+2026-11,EMEA,Software,expense,6300,5223
+2026-11,EMEA,Marketing,expense,8400,8282
+2026-11,APAC,Sales,revenue,60000,61831
+2026-11,APAC,Services,revenue,22500,20247
+2026-11,APAC,Payroll,expense,35000,35537
+2026-11,APAC,Software,expense,4500,4890
+2026-11,APAC,Marketing,expense,6000,6480
+2026-12,North America,Sales,revenue,120000,127136
+2026-12,North America,Services,revenue,45000,39056
+2026-12,North America,Payroll,expense,70000,69668
+2026-12,North America,Software,expense,9000,8965
+2026-12,North America,Marketing,expense,12000,12764
+2026-12,EMEA,Sales,revenue,84000,86983
+2026-12,EMEA,Services,revenue,31500,25484
+2026-12,EMEA,Payroll,expense,49000,53714
+2026-12,EMEA,Software,expense,6300,5788
+2026-12,EMEA,Marketing,expense,8400,8970
+2026-12,APAC,Sales,revenue,60000,52828
+2026-12,APAC,Services,revenue,22500,22062
+2026-12,APAC,Payroll,expense,35000,38627
+2026-12,APAC,Software,expense,4500,4543
+2026-12,APAC,Marketing,expense,6000,6200
