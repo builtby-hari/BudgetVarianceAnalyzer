@@ -16,7 +16,7 @@ from html import escape
 from .commentary import MONTH_ABBR, money
 from .data import load_dataset, load_forecast, load_wide
 from .forecast import forecast_analysis
-from .variance import EXPENSE, METHOD_LABEL, analyze, bridge_steps, top_drivers
+from .variance import EXPENSE, METHOD_LABEL, REVENUE, analyze, bridge_steps, top_drivers
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 W, H = 820, 470
@@ -24,6 +24,11 @@ L, R, T, B = 80, 30, 55, 95
 FONT = 'font-family="Helvetica, Arial, sans-serif"'
 MONO = 'font-family="Menlo, Consolas, Courier New, monospace"'
 SYNTHETIC = "Synthetic sample data"
+
+
+def _src(analysis):
+    """Chart subtitle for where the data came from: the SEC label when the analysis has one."""
+    return analysis.meta.get("chart_label") or SYNTHETIC
 
 # light and dark palettes. Navy and teal follow the shared README style. Warm (unfavorable),
 # muted (budget), and panel (neutral cells) are the extra colors the charts need.
@@ -74,6 +79,8 @@ def _frame(title, subtitle, ylabel, lo, hi, yfmt, pal, h=H, b=B, right=W - R):
 
 
 def _fmt_m(v):
+    if abs(v) >= 1e9:
+        return f"${v/1e9:.1f}B"
     return f"${v/1e6:.1f}M" if abs(v) >= 1e6 else f"${v/1e3:,.0f}K"
 
 
@@ -114,10 +121,18 @@ def _value_label(p, pal, x, y, text):
 
 
 def _period(analysis):
+    if analysis.meta.get("period_label"):      # SEC modes: a filed period, not months of a year
+        return analysis.meta["period_label"]
     return f"through {analysis.through} ({analysis.months_elapsed} months)"
 
 
-def _waterfall(pal, title, ylabel, start, steps, end, start_label, end_label):
+def _sec_words(analysis):
+    """(baseline name, current name) for chart text. SEC modes name the comparison; the synthetic data keeps budget/actual."""
+    w = analysis.meta.get("baseline_word")
+    return (w.capitalize(), "Current") if w else ("Budget", "Actual")
+
+
+def _waterfall(pal, title, ylabel, start, steps, end, start_label, end_label, src=SYNTHETIC):
     """Truncated-axis waterfall: start bar, one floating bar per (label, delta) step, end bar. Over (positive
     delta) is warm, under is teal. Flat data is divide-by-zero safe (_frame widens a flat axis)."""
     b, level, levels = start, start, []
@@ -128,7 +143,7 @@ def _waterfall(pal, title, ylabel, start, steps, end, start_label, end_label):
     span = max(allv) - min(allv)
     lo, hi = min(allv) - span * 0.35, max(allv) + span * 0.12
     WH, WB = 540, 175
-    p, ys = _frame(title, f"{SYNTHETIC}. Axis truncated, not from zero.", ylabel, lo, hi, _fmt_m, pal, WH, WB)
+    p, ys = _frame(title, f"{src}. Axis truncated, not from zero.", ylabel, lo, hi, _fmt_m, pal, WH, WB)
     cols = len(steps) + 2
     slot = (W - L - R) / cols
     bw = slot * 0.62
@@ -158,7 +173,8 @@ def waterfall_svg(analysis, n_drivers=6, dark=False):
     steps = [(f"{r.cost_center}: {r.category}", r.var) for r in lines]
     steps.append(("All Other Lines", analysis.total.var - sum(r.var for r in lines)))
     return _waterfall(_pal(dark), f"YTD Budget to Actual by Driver (Through {analysis.through})", "YTD Spend",
-                      analysis.total.ytd_budget, steps, analysis.total.ytd_actual, "YTD Budget", "YTD Actual")
+                      analysis.total.ytd_budget, steps, analysis.total.ytd_actual, "YTD Budget", "YTD Actual",
+                      _src(analysis))
 
 
 def outlook_svg(analysis, fa, n_drivers=6, dark=False):
@@ -206,7 +222,7 @@ def monthly_svg(analysis, dark=False):
     lo = math.floor(min(vals) * 0.9 / 1e5) * 1e5
     hi = max(vals) * 1.05
     p, ys = _frame(f"Monthly Budget vs Actual, Total (FY{analysis.year})",
-                   f"{SYNTHETIC}. Axis truncated, not from zero.", "Monthly Spend", lo, hi, _fmt_m, pal)
+                   f"{_src(analysis)}. Axis truncated, not from zero.", "Monthly Spend", lo, hi, _fmt_m, pal)
     step = (W - L - R) / 12
     xs = lambda i: L + step * (i + 0.5)
     for i in range(12):
@@ -237,6 +253,10 @@ def bridge_svg(analysis, dark=False):
     The y-axis is truncated (the title says where it starts); the total bars hang from the axis floor."""
     pal = _pal(dark)
     steps = bridge_steps(analysis)
+    bname, cname = _sec_words(analysis)
+    if analysis.meta.get("baseline_word"):
+        steps[0] = (f"{bname} OI", steps[0][1], steps[0][2])
+        steps[-1] = (f"{cname} OI", steps[-1][1], steps[-1][2])
     levels, running = [], 0.0
     for label, value, kind in steps:
         if kind == "total":
@@ -254,9 +274,12 @@ def bridge_svg(analysis, dark=False):
     lo = math.floor((lo_raw - span * 0.25) / step) * step
     hi = math.ceil((hi_raw + span * 0.10) / step) * step
     WH, WB = 540, 175
-    p, ys = _frame(f"Operating Income Bridge: Budget to Actual (YTD; Axis Starts at {lo:,.0f})",
-                   f"{SYNTHETIC}, {_period(analysis)}. Axis truncated, not from zero.",
-                   "Operating Income, YTD", lo, hi, _fmt_signed, pal, WH, WB)
+    sec = bool(analysis.meta.get("baseline_word"))
+    title = (f"Operating Income Bridge: {bname} to {cname} (Axis Starts at {_fmt_m(lo)})" if sec
+             else f"Operating Income Bridge: Budget to Actual (YTD; Axis Starts at {lo:,.0f})")
+    sub = (f"{_src(analysis)}. Axis truncated, not from zero." if sec
+           else f"{_src(analysis)}, {_period(analysis)}. Axis truncated, not from zero.")
+    p, ys = _frame(title, sub, "Operating Income" if sec else "Operating Income, YTD", lo, hi, _fmt_signed, pal, WH, WB)
     slot = (W - L - R) / len(levels)
     bw = slot * 0.62
 
@@ -293,8 +316,12 @@ def line_items_svg(analysis, dark=False):
         g[1] += r.ytd_actual
     items = sorted(groups.items(), key=lambda kv: (-kv[1][0], kv[0]))
     top = max(max(b, a) for _, (b, a) in items)
-    p, ys = _frame("YTD Budget vs Actual by Line Item (Expense, All Cost Centers)",
-                   f"{SYNTHETIC}, {_period(analysis)}", "YTD Spend", 0, top * 1.15, _fmt_m, pal)
+    bname, cname = _sec_words(analysis)
+    sec = bool(analysis.meta.get("baseline_word"))
+    p, ys = _frame(f"{bname} vs {cname} by Line Item (Expense, All Cost Centers)" if sec
+                   else "YTD Budget vs Actual by Line Item (Expense, All Cost Centers)",
+                   f"{_src(analysis)}" if sec else f"{_src(analysis)}, {_period(analysis)}",
+                   "Expense" if sec else "YTD Spend", 0, top * 1.15, _fmt_m, pal)
     slot = (W - L - R) / len(items)
     bw = slot * 0.3
     for i, (name, (b, a)) in enumerate(items):
@@ -304,7 +331,34 @@ def line_items_svg(analysis, dark=False):
             _value_label(p, pal, x + bw / 2, ys(v) - 5, _fmt_m(v))
         for k, line in enumerate(_split_label(name)):
             p.append(f'<text x="{cx:.1f}" y="{H-B+19+k*14}" text-anchor="middle" font-size="11" fill="{pal["text"]}" {FONT}>{escape(line)}</text>')
-    _legend(p, pal, H - 14, [(pal["muted"], "Budget", False), (pal["navy"], "Actual", False)])
+    _legend(p, pal, H - 14, [(pal["muted"], bname, False), (pal["navy"], cname, False)])
+    p.append('</svg>')
+    return "\n".join(p)
+
+
+def segments_svg(analysis, dark=False):
+    """Segment revenue, prior year vs current year, one pair of bars per segment (public-company segments mode).
+    Cost centers are the segments; the Revenue line of each is plotted. Axis starts at zero."""
+    pal = _pal(dark)
+    items = [(r.cost_center, r.ytd_budget, r.ytd_actual) for r in analysis.lines if r.kind == REVENUE]
+    items.sort(key=lambda t: (-t[2], t[0]))
+    if not items:
+        raise ValueError("no revenue lines to chart")
+    top = max(max(b, a) for _, b, a in items)
+    p, ys = _frame("Segment Revenue: Prior Year vs Current Year",
+                   f"{_src(analysis)}. Axis starts at zero.", "Revenue", 0, top * 1.18, _fmt_m, pal)
+    slot = (W - L - R) / len(items)
+    bw = slot * 0.3
+    for i, (name, b, a) in enumerate(items):
+        cx = L + slot * (i + 0.5)
+        for x, v, color in ((cx - bw - 1.5, b, pal["muted"]), (cx + 1.5, a, pal["navy"])):
+            p.append(f'<rect x="{x:.1f}" y="{ys(v):.1f}" width="{bw:.1f}" height="{ys(0)-ys(v):.1f}" fill="{color}"/>')
+            _value_label(p, pal, x + bw / 2, ys(v) - 5, _fmt_m(v))
+        chg = f"{(a-b)/abs(b)*100:+.1f}%" if b else "n/a"
+        _value_label(p, pal, cx, ys(max(a, b)) - 20, chg)
+        for k, line in enumerate(_split_label(name, 18)):
+            p.append(f'<text x="{cx:.1f}" y="{H-B+19+k*14}" text-anchor="middle" font-size="11" fill="{pal["text"]}" {FONT}>{escape(line)}</text>')
+    _legend(p, pal, H - 14, [(pal["muted"], "Prior year", False), (pal["navy"], "Current year", False)])
     p.append('</svg>')
     return "\n".join(p)
 
@@ -343,7 +397,7 @@ def heatmap_svg(analysis, dark=False):
     legend_y = TOP + len(rows) * CELL_H + GAP + 56
     h = legend_y + 36
     p = _open(W, h, pal, "Variance % vs Budget by Cost Center and Month (Expense)",
-              f"{SYNTHETIC}, {_period(analysis)}. Teal is under budget, orange is over budget.")
+              f"{_src(analysis)}, {_period(analysis)}. Teal is under budget, orange is over budget.")
     p.insert(1, f'<defs><linearGradient id="heatgrad" x1="0" x2="1" y1="0" y2="0">'
                 f'<stop offset="0" stop-color="{pal["teal"]}"/><stop offset="0.5" stop-color="{pal["panel"]}"/>'
                 f'<stop offset="1" stop-color="{pal["warm"]}"/></linearGradient></defs>')
@@ -388,7 +442,7 @@ def cumulative_svg(analysis, dark=False):
     hi = math.ceil(max(cum_a + cum_b) * 1.01 / 1e5) * 1e5
     right = W - 175
     p, ys = _frame("Cumulative YTD Budget vs Actual (Expense, Total)",
-                   f"{SYNTHETIC}, {_period(analysis)}. Axis truncated, not from zero.",
+                   f"{_src(analysis)}, {_period(analysis)}. Axis truncated, not from zero.",
                    "Cumulative Spend", lo, hi, _fmt_m, pal, right=right)
     xs = lambda i: L + (right - L - 20) * (i / max(n - 1, 1))
     for i in range(n):
@@ -423,7 +477,7 @@ def flagged_svg(analysis, dark=False, n=10):
     ROW, TOP_Y = 34, 96
     h = TOP_Y + len(rows) * ROW + 70
     p = _open(W, h, pal, "Flagged Line Items: Largest Variances, Favorable and Unfavorable",
-              f"{SYNTHETIC}, {_period(analysis)}. * = material (over both the $ and % thresholds).")
+              f"{_src(analysis)}, {_period(analysis)}. * = material (over both the $ and % thresholds).")
     x0, half = 470, 150
     p.append(f'<line x1="{x0}" x2="{x0}" y1="{TOP_Y-10}" y2="{TOP_Y + len(rows)*ROW - 8}" stroke="{pal["text"]}"/>')
     for i, r in enumerate(rows):
@@ -473,16 +527,24 @@ def cli_output(args):
     return buf.getvalue()
 
 
-def sample_output_svg(dark=False, args=("--no-commentary",)):
-    """Terminal-window render of real CLI output, wrapped to fit the window."""
+def sample_output_svg(dark=False, args=("--no-commentary",), shown_cmd=None, stop_at=None):
+    """Terminal-window render of real CLI output, wrapped to fit the window. shown_cmd replaces the command line
+    printed in the window (so absolute paths do not leak); stop_at cuts the capture at the first line that starts
+    with that text (the output above it is unchanged)."""
     pal = _pal(dark)
     lines = []
-    for raw in cli_output(args).rstrip("\n").split("\n"):
+    out = cli_output(args).rstrip("\n").split("\n")
+    if stop_at:
+        cut = next((i for i, l in enumerate(out) if l.startswith(stop_at)), len(out))
+        out = out[:cut]
+        while out and not out[-1].strip():
+            out.pop()
+    for raw in out:
         if len(raw) <= 130:
             lines.append(raw)
         else:
             lines.extend(textwrap.wrap(raw, 130, subsequent_indent="    ", break_on_hyphens=False) or [""])
-    cmd = "$ python3 cli.py " + " ".join(args)
+    cmd = "$ " + (shown_cmd or "python3 cli.py " + " ".join(args))
     lh, body_top, w = 19, 60, 1180
     h = body_top + lh * (len(lines) + 2) + 22
     if dark:
@@ -509,6 +571,8 @@ def write_svgs(analysis, outdir):
     charts = [("waterfall.svg", waterfall_svg(analysis)), ("monthly.svg", monthly_svg(analysis))]
     if analysis.has_revenue:
         charts.append(("bridge.svg", bridge_svg(analysis)))
+    if analysis.meta.get("segments"):
+        charts.append(("segments.svg", segments_svg(analysis)))
     for name, svg in charts:
         with open(os.path.join(outdir, name), "w") as f:
             f.write(svg)
@@ -530,6 +594,49 @@ def sample_forecast(expense, root=ROOT):
     data = os.path.join(root, "data")
     b, a, kinds = load_dataset(os.path.join(data, "budget.csv"), os.path.join(data, "actuals.csv"))
     return forecast_analysis(expense, b, a, load_forecast(os.path.join(data, "forecast.csv"), kinds))
+
+
+def sec_analyses(root=ROOT):
+    """(HD year over year analysis, MSFT segments analysis) built offline from the bundled SEC fixtures."""
+    from .secdata import build_dataset, load_json
+    from .ixbrl import extract_segments, load_instance
+    from .seccli import segments_dataset, _run_engine
+    import argparse
+    fix = os.path.join(root, "tests", "fixtures")
+    ds = build_dataset(load_json(os.path.join(fix, "hd_companyfacts.json")), "HD", "yoy", "fy")
+    ns = argparse.Namespace(amount_threshold=None, pct_threshold=5.0)
+    hd, _ = _run_engine(ns, ds.budget, ds.actuals, ds.kinds, ds.through, ds.base_revenue, ds.sources, ds.meta, ds.warnings)
+    inst = load_instance(os.path.join(fix, "msft_10k_fy2026_trimmed.htm"))
+    res = extract_segments(inst, "segment")
+    b, a, k, src, meta, base_rev = segments_dataset(res, "Microsoft", "MSFT", "10-K", "0001193125-26-323660")
+    ms, _ = _run_engine(ns, b, a, k, res.cur_end[:7], base_rev, src, meta, res.warnings)
+    return hd, ms
+
+
+def build_sec_docs(outdir, root=ROOT):
+    """Write the public-company visuals (docs/public-companies.md and the README), light and dark, from the
+    bundled fixtures. Returns the file names written."""
+    os.makedirs(outdir, exist_ok=True)
+    hd, ms = sec_analyses(root)
+    fix = "tests/fixtures/hd_companyfacts.json"
+    gcmd = (f"python3 cli.py sec --ticker HD --mode guidance --facts {fix} "
+            "--guidance data/guidance_HD_example.csv")
+    gargs = ["sec", "--ticker", "HD", "--mode", "guidance", "--facts", os.path.join(root, fix),
+             "--guidance", os.path.join(root, "data", "guidance_HD_example.csv")]
+    jobs = {
+        "sec-hd-bridge": lambda d: bridge_svg(hd, d),
+        "sec-hd-line-items": lambda d: line_items_svg(hd, d),
+        "sec-msft-segments": lambda d: segments_svg(ms, d),
+        "sec-hd-guidance": lambda d: sample_output_svg(d, gargs, gcmd, stop_at="Sources ("),
+    }
+    written = []
+    for name, make in jobs.items():
+        for dark in (False, True):
+            fname = f"{name}-dark.svg" if dark else f"{name}.svg"
+            with open(os.path.join(outdir, fname), "w") as f:
+                f.write(make(dark))
+            written.append(fname)
+    return written
 
 
 def build_docs(outdir, root=ROOT):
@@ -559,5 +666,5 @@ def build_docs(outdir, root=ROOT):
 
 
 if __name__ == "__main__":
-    names = build_docs(os.path.join(ROOT, "docs"))
+    names = build_docs(os.path.join(ROOT, "docs")) + build_sec_docs(os.path.join(ROOT, "docs"))
     print("wrote " + ", ".join(names) + " into docs/")

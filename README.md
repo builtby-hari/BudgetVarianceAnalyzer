@@ -69,6 +69,44 @@ And what the terminal prints:
   <img src="docs/sample-output.svg" alt="Terminal output of the tool: a table of year-to-date budget, actual and variance by cost center, followed by the top five drivers" width="820">
 </picture>
 
+## Real companies (SEC filings)
+
+The same engine also runs on public companies. They do not publish budgets, so the comparison is against something they do publish.
+
+```mermaid
+flowchart LR
+    S["SEC filing data"] --> Y["yoy<br/>baseline: same period last year"]
+    S --> Q["qoq<br/>baseline: previous quarter"]
+    S --> G["guidance<br/>baseline: guidance midpoint<br/>that you type in"]
+    S --> M["segments<br/>baseline: last year's segment figures"]
+    Y --> E["Variance engine<br/>actual minus baseline"]
+    Q --> E
+    G --> E
+    M --> E
+```
+
+Try it on the bundled Home Depot data, no network needed:
+
+```bash
+python3 cli.py sec --ticker HD --facts tests/fixtures/hd_companyfacts.json --mode yoy
+```
+
+Home Depot's fiscal 2025 sales rose $5.2B, but operating income fell $636M. Higher cost of sales ($3.6B) and SG&A ($2.0B) took more than the extra sales brought in.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/sec-hd-bridge-dark.svg">
+  <img src="docs/sec-hd-bridge.svg" alt="Home Depot operating income bridge from $21.5B in the prior year to $20.9B. Revenue adds $5.17B. Cost of revenue takes $3.61B, SG&A takes $1.95B and depreciation takes $239M." width="820">
+</picture>
+
+Segments read straight from a 10-K. Microsoft's Intelligent Cloud grew 29.7% and More Personal Computing slipped 1.1%:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/sec-msft-segments-dark.svg">
+  <img src="docs/sec-msft-segments.svg" alt="Microsoft segment revenue, prior year against current year. Productivity and Business Processes $140.0B, Intelligent Cloud $137.8B, More Personal Computing $54.1B." width="820">
+</picture>
+
+Every number lists its filing, period, accession number and XBRL tag. Details, flags and limits: [docs/public-companies.md](docs/public-companies.md).
+
 ## Run it
 
 Python 3.9+. No installs needed for the core tool.
@@ -90,4 +128,4 @@ python3 -m unittest discover                         # tests
 - Closed months with no actuals used to count as zero spend, which made lines look under budget. The tool now stops and names the missing month.
 - CSVs saved from Excel carry a hidden byte-order mark that broke the header match. They now load cleanly.
 
-All data is synthetic. Full concepts, formulas and methods: [docs/reference.md](docs/reference.md).
+The sample data in `data/` is synthetic. The public-company fixtures in `tests/fixtures` are trimmed copies of real SEC filings (Home Depot and Microsoft). Full concepts, formulas and methods: [docs/reference.md](docs/reference.md).

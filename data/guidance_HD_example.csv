@@ -1,0 +1,10 @@
+# Real example: The Home Depot fiscal 2025 guidance, as first given in its fourth quarter fiscal 2024 earnings release.
+# Source: Exhibit 99.1 to Form 8-K filed 2025-02-25 (accession 0000354950-25-000030), section "Fiscal 2025 Guidance",
+# which lists: "Total sales growth of approximately 2.8%", "Operating margin of approximately 13.0%" and
+# "Diluted earnings-per-share to decline approximately 3% from $14.91 in fiscal 2024".
+# The EPS point below is that sentence worked out: 14.91 x (1 - 0.03) = 14.46. It is arithmetic on the cited text, not a printed figure.
+# This is the initial guidance only. The company may have updated it in later releases, which are not reflected here.
+metric,period_end,duration,low,high,point,unit,source
+revenue_growth_pct,2026-02-01,FY,,,2.8,pct,"8-K 2025-02-25 Ex. 99.1 (acc 0000354950-25-000030) Fiscal 2025 Guidance: total sales growth of approximately 2.8%"
+operating_margin_pct,2026-02-01,FY,,,13.0,pct,"8-K 2025-02-25 Ex. 99.1 (acc 0000354950-25-000030) Fiscal 2025 Guidance: operating margin of approximately 13.0%"
+diluted_eps,2026-02-01,FY,,,14.46,usd_per_share,"8-K 2025-02-25 Ex. 99.1 (acc 0000354950-25-000030) Fiscal 2025 Guidance: diluted EPS to decline approx 3% from $14.91 (14.91 x 0.97)"

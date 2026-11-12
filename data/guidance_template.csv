@@ -1,0 +1,7 @@
+# Guidance template. One row per guided number. Delete nothing above the header. Lines starting with # are ignored.
+# metric: revenue, gross_profit, cost_of_revenue, sga, rd, operating_expenses, operating_income, interest_expense,
+#         pretax_income, income_tax, net_income, diluted_eps, d_and_a, revenue_growth_pct, operating_margin_pct
+# period_end: YYYY-MM-DD end of the guided period. duration: FY, Q or YTD.
+# Give low and high, or a single point. unit: usd, thousands, millions, billions, usd_per_share or pct.
+# source: where you read it, e.g. "8-K 2025-11-18 earnings release p.2". Required.
+metric,period_end,duration,low,high,point,unit,source

@@ -99,13 +99,14 @@ def build_html(analysis, top_n=8):
     a, t, th = analysis, analysis.total, analysis.thresholds
     label = METHOD_LABEL[a.method]
     rr = f"last {a.run_rate_months} months" if a.run_rate_months > 0 else "YTD"
+    title = a.meta.get("title") or f"Budget Variance Report, FY{a.year}"
     out = [f"<!doctype html><html lang='en'><head><meta charset='utf-8'>"
            f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
-           f"<title>Budget Variance Report FY{a.year}</title><style>{CSS}</style></head><body>",
-           f"<h1>Budget Variance Report, FY{a.year}</h1>",
+           f"<title>{escape(title)}</title><style>{CSS}</style></head><body>",
+           f"<h1>{escape(title)}</h1>",
            f"<div class='sub'>{escape(period_text(a))} (actuals through {escape(a.through)}). "
            f"Variance = actual - budget. Expense: positive is over budget (unfavorable). "
-           f"Revenue: positive is above budget (favorable). Synthetic sample data.</div>",
+           f"Revenue: positive is above budget (favorable). {escape(a.meta.get('note') or 'Synthetic sample data.')}</div>",
            "<div class='tiles'>"
            f"<div class='tile'><span>YTD actual</span><b>{money(t.ytd_actual)}</b></div>"
            f"<div class='tile'><span>YTD budget</span><b>{money(t.ytd_budget)}</b></div>"
@@ -140,6 +141,15 @@ def build_html(analysis, top_n=8):
         out.append(f"<h3>{escape(cc)}</h3><ul>" + "".join(f"<li>{escape(b)}</li>" for b in bullets) + "</ul>")
     if a.warnings:
         out += ["<h2>Data Warnings</h2><ul>"] + [f"<li>{escape(w)}</li>" for w in a.warnings] + ["</ul>"]
+    if a.sources:
+        out += ["<h2>Sources</h2>", "<table><tr><th class='l'>Line</th><th>Role</th><th>Value</th><th>Form</th>"
+                "<th>Period</th><th>Accession</th><th>Filed</th><th class='l'>Tag</th></tr>"]
+        for x in a.sources:
+            out.append(f"<tr><td class='l'>{escape(x['line'])}</td><td>{escape(x['role'])}</td><td>{x['value']:,.2f}</td>"
+                       f"<td>{escape(x['form'])}</td><td>{escape(x['period_start'])} to {escape(x['period_end'])}</td>"
+                       f"<td>{escape(x['accession'])}</td><td>{escape(x['filed'])}</td><td class='l'>{escape(x['tag'])}</td></tr>")
+        out += ["</table>", "<div class='note'>Every figure above comes from the filing shown here. A derived line "
+                "lists each filed figure it was built from.</div>"]
     out.append("<p class='note'>Commentary states what moved and by how much; root causes should come from cost-center owners.</p></body></html>")
     return "\n".join(out)
 

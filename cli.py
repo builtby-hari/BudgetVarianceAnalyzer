@@ -74,6 +74,10 @@ def _payload(an):
 
 
 def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if argv and argv[0] == "sec":   # public-company mode: python cli.py sec --ticker HD --mode yoy
+        from bva.seccli import main as sec_main
+        return sec_main(argv[1:])
     parser = build_parser()
     a = parser.parse_args(argv)
     if a.through and not re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", a.through):

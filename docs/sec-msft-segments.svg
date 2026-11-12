@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 470" width="820" height="470" role="img" aria-label="Segment Revenue: Prior Year vs Current Year">
+<rect width="820" height="470" fill="#ffffff"/>
+<text x="410.0" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#334155" font-family="Helvetica, Arial, sans-serif">Segment Revenue: Prior Year vs Current Year</text>
+<text x="410.0" y="45" text-anchor="middle" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">MSFT segments FY ended 2026-06-30 vs prior year. Axis starts at zero.</text>
+<line x1="80" x2="790" y1="375.0" y2="375.0" stroke="#cbd5e1" stroke-width="0.8"/>
+<text x="72" y="379.0" text-anchor="end" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">$0K</text>
+<line x1="80" x2="790" y1="278.1" y2="278.1" stroke="#cbd5e1" stroke-width="0.8"/>
+<text x="72" y="282.1" text-anchor="end" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">$50.0B</text>
+<line x1="80" x2="790" y1="181.3" y2="181.3" stroke="#cbd5e1" stroke-width="0.8"/>
+<text x="72" y="185.3" text-anchor="end" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">$100.0B</text>
+<line x1="80" x2="790" y1="84.4" y2="84.4" stroke="#cbd5e1" stroke-width="0.8"/>
+<text x="72" y="88.4" text-anchor="end" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">$150.0B</text>
+<line x1="80" x2="80" y1="55" y2="375" stroke="#334155"/>
+<line x1="80" x2="790" y1="375" y2="375" stroke="#334155"/>
+<text transform="translate(18 215.0) rotate(-90)" text-anchor="middle" font-size="12" fill="#334155" font-family="Helvetica, Arial, sans-serif">Revenue</text>
+<rect x="125.8" y="141.0" width="71.0" height="234.0" fill="#94a3b8"/>
+<text x="161.3" y="136.0" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">$120.8B</text>
+<rect x="199.8" y="103.8" width="71.0" height="271.2" fill="#1f3a5f"/>
+<text x="235.3" y="98.8" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">$140.0B</text>
+<text x="198.3" y="83.8" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">+15.9%</text>
+<text x="198.3" y="394" text-anchor="middle" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">Productivity And</text>
+<text x="198.3" y="408" text-anchor="middle" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">Business Processes</text>
+<rect x="362.5" y="169.2" width="71.0" height="205.8" fill="#94a3b8"/>
+<text x="398.0" y="164.2" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">$106.3B</text>
+<rect x="436.5" y="108.1" width="71.0" height="266.9" fill="#1f3a5f"/>
+<text x="472.0" y="103.1" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">$137.8B</text>
+<text x="435.0" y="88.1" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">+29.7%</text>
+<text x="435.0" y="394" text-anchor="middle" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">Intelligent Cloud</text>
+<rect x="599.2" y="269.1" width="71.0" height="105.9" fill="#94a3b8"/>
+<text x="634.7" y="264.1" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">$54.6B</text>
+<rect x="673.2" y="270.3" width="71.0" height="104.7" fill="#1f3a5f"/>
+<text x="708.7" y="265.3" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">$54.1B</text>
+<text x="671.7" y="249.1" text-anchor="middle" font-size="10.5" fill="#334155" font-family="Helvetica, Arial, sans-serif">-1.1%</text>
+<text x="671.7" y="394" text-anchor="middle" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">More Personal</text>
+<text x="671.7" y="408" text-anchor="middle" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">Computing</text>
+<rect x="80" y="447" width="10" height="10" fill="#94a3b8"/>
+<text x="95" y="456" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">Prior year</text>
+<rect x="181.0" y="447" width="10" height="10" fill="#1f3a5f"/>
+<text x="196.0" y="456" font-size="11" fill="#334155" font-family="Helvetica, Arial, sans-serif">Current year</text>
+</svg>

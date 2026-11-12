@@ -140,6 +140,8 @@ class Analysis:
     operating_income: Optional[OperatingIncome] = None
     cc_monthly: Dict[str, List[dict]] = field(default_factory=dict)  # expense cost center -> month, budget, actual
     forecast: Optional[object] = None   # a forecast.ForecastAnalysis when a forecast file was given
+    sources: List[dict] = field(default_factory=list)   # filing sources behind each figure (SEC modes)
+    meta: dict = field(default_factory=dict)            # labels for non-budget comparisons (SEC modes), empty otherwise
 
     @property
     def expense_lines(self):

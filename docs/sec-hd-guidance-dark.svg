@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 425" width="1200" height="425" role="img" aria-label="Terminal output of the budget variance CLI">
+<rect x="10" y="10" width="1180" height="405" rx="12" fill="#0f172a" stroke="#334155"/>
+<path d="M10 22 Q10 10 22 10 L1178 10 Q1190 10 1190 22 L1190 44 L10 44 Z" fill="#1e293b"/>
+<circle cx="34" cy="27" r="6" fill="#ff5f57"/><circle cx="54" cy="27" r="6" fill="#febc2e"/><circle cx="74" cy="27" r="6" fill="#28c840"/>
+<text x="600" y="31" text-anchor="middle" font-size="12" fill="#e2e8f0" font-family="Helvetica, Arial, sans-serif">bva: Budget Variance Analyzer</text>
+<text x="30" y="60" font-size="13" font-weight="bold" fill="#2dd4bf" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">$ python3 cli.py sec --ticker HD --mode guidance --facts tests/fixtures/hd_companyfacts.json --guidance data/guidance_HD_example.csv</text>
+<text x="30" y="98" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">The Home Depot, Inc.: reported actuals vs company guidance</text>
+<text x="30" y="117" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">Metric                      Period end           Low        High      Actual  Position</text>
+<text x="30" y="136" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">Revenue growth (%)          2026-02-01          2.80        2.80        3.24  above</text>
+<text x="30" y="155" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">    source: 8-K 2025-02-25 Ex. 99.1 (acc 0000354950-25-000030) Fiscal 2025 Guidance: total sales growth of approximately 2.8%</text>
+<text x="30" y="174" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">    note: computed: this period revenue / same period last year - 1</text>
+<text x="30" y="193" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">Operating margin (%)        2026-02-01         13.00       13.00       12.68  below</text>
+<text x="30" y="212" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">    source: 8-K 2025-02-25 Ex. 99.1 (acc 0000354950-25-000030) Fiscal 2025 Guidance: operating margin of approximately 13.0%</text>
+<text x="30" y="231" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">    note: computed: operating income / revenue</text>
+<text x="30" y="250" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">Diluted EPS                 2026-02-01         14.46       14.46       14.23  below</text>
+<text x="30" y="269" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">    source: 8-K 2025-02-25 Ex. 99.1 (acc 0000354950-25-000030) Fiscal 2025 Guidance: diluted EPS to decline approx 3% from $14.91</text>
+<text x="30" y="288" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">    (14.91 x 0.97)</text>
+<text x="30" y="307" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace"></text>
+<text x="30" y="326" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">Variance vs guidance midpoint (no revenue guidance, so no dollar threshold; material if over 5%):</text>
+<text x="30" y="345" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">                                          Guidance mid          Actual             Var   Var % F/U</text>
+<text x="30" y="364" font-size="13" fill="#e2e8f0" xml:space="preserve" font-family="Menlo, Consolas, Courier New, monospace">  Diluted EPS                                    14.46           14.23           -0.23  -1.6% U</text>
+</svg>

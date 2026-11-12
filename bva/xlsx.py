@@ -95,6 +95,9 @@ def write_xlsx(analysis, th, path):
         _row(3, [_cell("A3", "Materiality: % threshold (both must breach)"), _cell("B3", th.pct, 5)]),
         _row(5, [_cell(f"{chr(65 + i)}5", h, 4) for i, h in enumerate(HEAD)]),
     ]
+    if analysis.meta:   # SEC modes: say what the budget column is and where the numbers are sourced
+        rows[0] = _row(1, [_cell("A1", analysis.meta.get("title", ""), 7)])
+        rows.insert(3, _row(4, [_cell("A4", analysis.meta.get("note", "") + ". Sources: see the sources CSV.")]))
     for n, r in enumerate(lines, FIRST):
         rows.append(_row(n, [_cell(f"A{n}", r.cost_center), _cell(f"B{n}", r.category or ""), _cell(f"C{n}", r.kind),
                              _cell(f"D{n}", r.ytd_budget, 1), _cell(f"E{n}", r.ytd_actual, 1)] + _calc(n, r)[:4]

@@ -9,6 +9,8 @@ MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 def money(v):
     """$1.23M / $267K / $950 (magnitude only)."""
     a = abs(v)
+    if a >= 1_000_000_000:
+        return f"${a/1_000_000_000:.2f}B"
     if a >= 1_000_000:
         return f"${a/1_000_000:.2f}M"
     if round(a / 1_000) >= 1 and round(a) < 999_500:
@@ -37,6 +39,8 @@ def phrase(var, pct, ref="budget", kind=EXPENSE):
 
 
 def period_text(analysis):
+    if analysis.meta.get("period_label"):
+        return analysis.meta["period_label"]
     n = analysis.months_elapsed
     return f"YTD {MONTH_ABBR[0]}-{MONTH_ABBR[n-1]}" if n > 1 else f"YTD {MONTH_ABBR[0]}"
 
@@ -44,32 +48,35 @@ def period_text(analysis):
 def cost_center_commentary(analysis, cc_row):
     """List of bullet strings for one cost center. Expense lines only, so the wording stays 'over budget'."""
     th = analysis.thresholds
+    ref = analysis.meta.get("baseline_word", "budget")   # "prior year" etc. in SEC modes
     lines = [l for l in analysis.expense_lines if l.cost_center == cc_row.cost_center]
     notable = lambda l: l.material or abs(l.var) >= th.amount
     drivers = top_drivers(lines, 3)
-    out = [f"{period_text(analysis)} spend {money(cc_row.ytd_actual)} vs budget {money(cc_row.ytd_budget)}: "
-           f"{phrase(cc_row.var, cc_row.var_pct)}."]
+    out = [f"{period_text(analysis)} spend {money(cc_row.ytd_actual)} vs {ref} {money(cc_row.ytd_budget)}: "
+           f"{phrase(cc_row.var, cc_row.var_pct, ref)}."]
     shown = []
     if drivers and abs(drivers[0].var) >= 0.5:
         d = drivers[0]
         shown.append(d)
-        out.append(f"Largest driver: {d.category}, {phrase(d.var, d.var_pct)}"
+        out.append(f"Largest driver: {d.category}, {phrase(d.var, d.var_pct, ref)}"
                    f"{' (material)' if d.material else ''}.")
         for d in drivers[1:]:
             if notable(d):
                 shown.append(d)
-                out.append(f"Also: {d.category}, {phrase(d.var, d.var_pct)}"
+                out.append(f"Also: {d.category}, {phrase(d.var, d.var_pct, ref)}"
                            f"{' (material)' if d.material else ''}.")
     offsets = [l for l in lines if l.var * cc_row.var < 0 and notable(l) and l not in shown]
     if offsets:
         o = top_drivers(offsets, 1)[0]
-        out.append(f"Largest offset to the net variance: {o.category}, {phrase(o.var, o.var_pct)}.")
+        out.append(f"Largest offset to the net variance: {o.category}, {phrase(o.var, o.var_pct, ref)}.")
     mat = [l for l in lines if l.material]
     if mat:
         out.append("Material items (over " + money(th.amount) + f" and {th.pct*100:g}%): "
                    + ", ".join(l.category for l in top_drivers(mat, len(mat))) + ".")
     else:
         out.append(f"No line breaches the materiality test (over {money(th.amount)} and {th.pct*100:g}%).")
+    if analysis.meta.get("no_projection"):
+        return out
     rr = analysis.run_rate_months
     basis = f"last {rr} months" if rr > 0 else "YTD"
     how = "YTD plus remaining budget" if analysis.method == "budget-remaining" else f"Run-rate ({basis} average)"
