@@ -1,5 +1,7 @@
 # Budget Variance Analyzer
 
+[![tests](https://github.com/builtby-hari/BudgetVarianceAnalyzer/actions/workflows/tests.yml/badge.svg)](https://github.com/builtby-hari/BudgetVarianceAnalyzer/actions/workflows/tests.yml) ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue) [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 The monthly budget-vs-actual close, as one command. Give it a budget file and an actuals file. It shows where spend is off, which gaps are big enough to need an explanation, and where the year lands at the current pace.
 
 On the sample data (synthetic FY2026, through September), total spend is **$547.7K (1.9%) over budget**, and one line, Technology contractors, is $454.5K over on its own.
@@ -108,6 +110,12 @@ Segments read straight from a 10-K. Microsoft's Intelligent Cloud grew 29.7% and
 Every number lists its filing, period, accession number and XBRL tag. Details, flags and limits: [docs/public-companies.md](docs/public-companies.md).
 
 ## Run it
+
+Try it in one line. No installs, it runs on the sample data:
+
+```bash
+git clone https://github.com/builtby-hari/BudgetVarianceAnalyzer.git && cd BudgetVarianceAnalyzer && python3 cli.py --through 2026-09
+```
 
 Python 3.9+. No installs needed for the core tool.
 

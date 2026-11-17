@@ -1,0 +1,30 @@
+name: Bug report
+description: Something gives a wrong number, crashes, or doesn't match the README.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you ran, what you got, and what you expected instead.
+      placeholder: |
+        I ran ...
+        I got ...
+        I expected ...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Command and input
+      description: The exact command, plus a small input file or the sample file you used. Please remove any real account numbers or personal data first.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Python version and OS
+      placeholder: Python 3.13, macOS 15
+    validations:
+      required: true

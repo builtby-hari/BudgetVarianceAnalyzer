@@ -1,0 +1,21 @@
+name: Idea or feature
+description: Something it should do that it doesn't yet.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do
+      description: The real task you have in mind. A sentence or two is plenty.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help
+      description: The option, output or check you'd want. Rough is fine.
+  - type: textarea
+    id: source
+    attributes:
+      label: Data or method source
+      description: If it needs a new formula or data source, link where it comes from.
